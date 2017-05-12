@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="h54-3z-Hos">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--配置WiFi-->
+        <scene sceneID="h0n-HK-Ct5">
+            <objects>
+                <viewController storyboardIdentifier="wifiset" title="配置WiFi" id="h54-3z-Hos" customClass="WifiSetting" customModule="xiaoe" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="laq-dJ-FEp"/>
+                        <viewControllerLayoutGuide type="bottom" id="Mei-1w-j7s"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="a5N-J2-Pt5">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="P9s-gd-Hij" userLabel="顶部View">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="185"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vQD-bA-Wab">
+                                        <rect key="frame" x="0.0" y="157.5" width="375" height="27.5"/>
+                                    </view>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="wifi标志" translatesAutoresizingMaskIntoConstraints="NO" id="b7t-f6-cry" userLabel="wifi logo">
+                                        <rect key="frame" x="140.5" y="91.5" width="94.5" height="66"/>
+                                    </imageView>
+                                </subviews>
+                                <color key="backgroundColor" red="0.99999648332595825" green="0.55428749322891235" blue="0.0002170305815525353" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstItem="b7t-f6-cry" firstAttribute="centerX" secondItem="P9s-gd-Hij" secondAttribute="centerX" id="3Yt-O8-2BI"/>
+                                    <constraint firstItem="b7t-f6-cry" firstAttribute="width" secondItem="P9s-gd-Hij" secondAttribute="width" multiplier="0.252" id="DDl-fI-WWN"/>
+                                    <constraint firstAttribute="bottom" secondItem="vQD-bA-Wab" secondAttribute="bottom" id="RKA-pl-0co"/>
+                                    <constraint firstAttribute="trailing" secondItem="vQD-bA-Wab" secondAttribute="trailing" id="Swu-hA-0bb"/>
+                                    <constraint firstItem="vQD-bA-Wab" firstAttribute="height" secondItem="P9s-gd-Hij" secondAttribute="height" multiplier="0.15" id="e1o-Wu-AhN"/>
+                                    <constraint firstItem="vQD-bA-Wab" firstAttribute="leading" secondItem="P9s-gd-Hij" secondAttribute="leading" id="fob-Q1-jQ0"/>
+                                    <constraint firstItem="vQD-bA-Wab" firstAttribute="top" secondItem="b7t-f6-cry" secondAttribute="bottom" id="fqw-Hy-8As"/>
+                                    <constraint firstItem="b7t-f6-cry" firstAttribute="height" secondItem="P9s-gd-Hij" secondAttribute="width" multiplier="0.176" id="sp9-PA-3pO"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oLp-E8-oQM" userLabel="待输入内容">
+                                <rect key="frame" x="37" y="215" width="301.5" height="106"/>
+                                <subviews>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Android-AP" borderStyle="roundedRect" placeholder="当前网络" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="T58-sh-h5b" userLabel="网络名称" customClass="MyTextFiled" customModule="xiaoe" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="301.5" height="50"/>
+                                        <nil key="textColor"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits" returnKeyType="next"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="leftImageSizeToSuper">
+                                                <real key="value" value="1"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </textField>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="网络密码" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="EKZ-Vr-DW4" userLabel="wifi密码" customClass="MyTextFiled" customModule="xiaoe" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="56" width="301.5" height="50"/>
+                                        <nil key="textColor"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="rightImage" value="眼睛"/>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="rightImageSizeToSuper">
+                                                <real key="value" value="0.5"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </textField>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="EKZ-Vr-DW4" firstAttribute="height" secondItem="T58-sh-h5b" secondAttribute="height" id="FTY-Ad-wjT"/>
+                                    <constraint firstAttribute="trailing" secondItem="T58-sh-h5b" secondAttribute="trailing" id="LqF-B3-kFM"/>
+                                    <constraint firstItem="T58-sh-h5b" firstAttribute="top" secondItem="oLp-E8-oQM" secondAttribute="top" id="OaP-Xg-VZL"/>
+                                    <constraint firstAttribute="bottom" secondItem="EKZ-Vr-DW4" secondAttribute="bottom" id="X6a-i5-TlC"/>
+                                    <constraint firstAttribute="trailing" secondItem="EKZ-Vr-DW4" secondAttribute="trailing" id="bdV-aX-x76"/>
+                                    <constraint firstItem="T58-sh-h5b" firstAttribute="height" secondItem="oLp-E8-oQM" secondAttribute="height" multiplier="0.45" constant="2.2999999999999972" id="dSX-bR-6UX"/>
+                                    <constraint firstItem="EKZ-Vr-DW4" firstAttribute="leading" secondItem="oLp-E8-oQM" secondAttribute="leading" id="nQR-qP-ho4"/>
+                                    <constraint firstItem="T58-sh-h5b" firstAttribute="leading" secondItem="oLp-E8-oQM" secondAttribute="leading" id="tam-oW-KPj"/>
+                                </constraints>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="M5C-64-HT0" userLabel="开始配置">
+                                <rect key="frame" x="39" y="580" width="296" height="57"/>
+                                <state key="normal" title="开始配置" backgroundImage="开始配置">
+                                    <color key="titleColor" red="0.99917298555374146" green="0.61333280801773071" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="begainconfig" destination="h54-3z-Hos" eventType="touchUpInside" id="kfF-jh-MFm"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="P9s-gd-Hij" secondAttribute="trailing" id="9ZQ-WF-H4o"/>
+                            <constraint firstItem="M5C-64-HT0" firstAttribute="height" secondItem="a5N-J2-Pt5" secondAttribute="width" multiplier="0.152" id="H6v-P2-pdG"/>
+                            <constraint firstItem="oLp-E8-oQM" firstAttribute="top" secondItem="P9s-gd-Hij" secondAttribute="bottom" constant="30" id="J95-hk-Poy"/>
+                            <constraint firstItem="M5C-64-HT0" firstAttribute="centerX" secondItem="a5N-J2-Pt5" secondAttribute="centerX" id="MbY-tl-FVG"/>
+                            <constraint firstItem="M5C-64-HT0" firstAttribute="width" secondItem="a5N-J2-Pt5" secondAttribute="width" multiplier="0.79" id="NCK-Lb-AqX"/>
+                            <constraint firstItem="oLp-E8-oQM" firstAttribute="height" secondItem="a5N-J2-Pt5" secondAttribute="width" multiplier="0.283" id="ONn-9M-luI"/>
+                            <constraint firstItem="P9s-gd-Hij" firstAttribute="leading" secondItem="a5N-J2-Pt5" secondAttribute="leading" id="UOD-n0-HQO"/>
+                            <constraint firstItem="P9s-gd-Hij" firstAttribute="height" secondItem="a5N-J2-Pt5" secondAttribute="height" multiplier="0.277" id="ZNg-Rd-Bw9"/>
+                            <constraint firstItem="Mei-1w-j7s" firstAttribute="top" secondItem="M5C-64-HT0" secondAttribute="bottom" constant="30" id="iH9-8k-KH4"/>
+                            <constraint firstItem="oLp-E8-oQM" firstAttribute="width" secondItem="a5N-J2-Pt5" secondAttribute="width" multiplier="0.804" id="mdH-Mm-04R"/>
+                            <constraint firstItem="oLp-E8-oQM" firstAttribute="centerX" secondItem="a5N-J2-Pt5" secondAttribute="centerX" id="w9H-n4-bpJ"/>
+                            <constraint firstItem="P9s-gd-Hij" firstAttribute="top" secondItem="a5N-J2-Pt5" secondAttribute="top" id="zEF-gX-bT5"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="配置WiFi" id="1Aw-tB-wkd"/>
+                    <connections>
+                        <outlet property="inputfiled" destination="oLp-E8-oQM" id="VxA-d4-xt9"/>
+                        <outlet property="startconfig" destination="M5C-64-HT0" id="ngA-xV-dDC"/>
+                        <outlet property="titleview" destination="P9s-gd-Hij" id="HTb-bU-BoR"/>
+                        <outlet property="wifiname" destination="T58-sh-h5b" id="eb0-Xv-LO4"/>
+                        <outlet property="wifipassword" destination="EKZ-Vr-DW4" id="uVd-3e-qHD"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="XpD-kl-5Qm" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-652" y="-208.24587706146929"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="wifi标志" width="136" height="95"/>
+        <image name="开始配置" width="426" height="82"/>
+        <image name="眼睛" width="36" height="25"/>
+    </resources>
+</document>

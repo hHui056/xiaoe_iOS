@@ -1,0 +1,10 @@
+framework module ETILinkSDK {
+  umbrella header "ETILinkSDK.h"
+
+  export *
+  module * { export * }
+}
+
+module ETILinkSDK.Swift {
+    header "ETILinkSDK-Swift.h"
+}

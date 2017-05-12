@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="12141" systemVersion="16E195" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="WifiInfo" representedClassName="WifiInfo" syncable="YES" codeGenerationType="class">
+        <attribute name="passwrold" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="wifiname" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="WifiInfo" positionX="169" positionY="6" width="128" height="75"/>
+    </elements>
+</model>
