@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import ETILinkSDK
+import SVProgressHUD
 
 class QRCodeSuccess: BaseViewController {
     // - 开发板的appkey
@@ -24,12 +26,13 @@ class QRCodeSuccess: BaseViewController {
     
     let defaults = UserDefaults.standard
     
+    var mainViewController : ViewController!
+    
     // - 存储开发板信息到本地
     @IBAction func btn_binddevice() {
         self.defaults.set(device_uid, forKey: DEVICE_ID_KEY)
         self.defaults.set(device_appkey, forKey: APPKEY_KEY)
         if btn_str == SURE_BIND_DEVICE { //跳转到Main storyboard
-           
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             let anotherView = (storyboard.instantiateViewController(withIdentifier:"HomeNav"))
             ViewController.isFirstUse = false
@@ -37,6 +40,7 @@ class QRCodeSuccess: BaseViewController {
                 
             })
         }else {//跳转到群组管理页面
+            
             let viewCtl : UIViewController = self.navigationController!.viewControllers[1]
             self.navigationController?.popToViewController(viewCtl, animated: true)
         }
@@ -46,6 +50,7 @@ class QRCodeSuccess: BaseViewController {
         self.label_appkey.text = device_appkey
         self.label_uid.text = device_uid
         self.btn_sure.setTitle(btn_str, for: .normal)
+        mainViewController = self.navigationController!.viewControllers[0] as! ViewController //取得ViewContrallor实例
     }
 
     override func didReceiveMemoryWarning() {
@@ -54,14 +59,16 @@ class QRCodeSuccess: BaseViewController {
     }
     
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    // - 添加群成员(每次添加一个)
+    func addGroupMember(groupId:String,userId:String){
+        SVProgressHUD.show(withStatus: "添加中...")
+        mainViewController.mAppManager.etManager.addGroupMembers(groupId, userList: [userId]) { (usersInfo, error) in
+            if error == nil {//添加成功
+                SVProgressHUD.showSuccess(withStatus: "添加成功")
+            } else {//添加失败
+                SVProgressHUD.showSuccess(withStatus: "添加失败")
+            }
+        }
     }
-    */
 
 }

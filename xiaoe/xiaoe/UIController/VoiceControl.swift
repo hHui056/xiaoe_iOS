@@ -9,7 +9,9 @@
 import UIKit
 
 class VoiceControl: BaseViewController , IFlySpeechRecognizerDelegate {
-    let appid = "appid=5912a568"
+    
+    let APPID = "appid=5912a568"
+    
     var iflySpeechRecognizer : IFlySpeechRecognizer!
     
     var resultText = ""
@@ -33,9 +35,7 @@ class VoiceControl: BaseViewController , IFlySpeechRecognizerDelegate {
         super.viewDidLoad()
         self.title = "语音控制"
         // Do any additional setup after loading the view.
-        
-       
-        IFlySpeechUtility.createUtility(appid)
+        IFlySpeechUtility.createUtility(APPID)
         
         self.iflySpeechRecognizer = IFlySpeechRecognizer.sharedInstance() as IFlySpeechRecognizer
         self.iflySpeechRecognizer.delegate = self
@@ -47,9 +47,6 @@ class VoiceControl: BaseViewController , IFlySpeechRecognizerDelegate {
         self.iflySpeechRecognizer.setParameter("8000", forKey: IFlySpeechConstant.vad_BOS())
         self.iflySpeechRecognizer.setParameter("500000", forKey: IFlySpeechConstant.speech_TIMEOUT())
         self.iflySpeechRecognizer.setParameter("50000", forKey: IFlySpeechConstant.net_TIMEOUT())
-        
-        
-       
     }
 
     override func didReceiveMemoryWarning() {
@@ -57,16 +54,6 @@ class VoiceControl: BaseViewController , IFlySpeechRecognizerDelegate {
         // Dispose of any resources that can be recreated.
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
     func onResults(_ results: [Any]!, isLast: Bool) {//语音识别结果
         var resultStr : String = ""
         if results != nil {

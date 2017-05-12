@@ -5,7 +5,6 @@
 //  Created by 何辉 on 2017/5/10.
 //  Copyright © 2017年 何辉. All rights reserved.
 //
-
 import UIKit
 import SwiftyJSON
 import ETILinkSDK
@@ -30,6 +29,8 @@ class GroupManager: BaseViewController , UICollectionViewDelegate ,UICollectionV
     
     var MyGroupInfo = ETILinkSDK.ETGroup() //我的群组信息
     
+    var isCreateGroup = false  //是否为创建群组 false：每次添加删除一个群成员     true：群成员数据本地运算，最后的数组用来创建群
+    
     @IBOutlet weak var group_name: MyTextFiled!
     
     
@@ -38,7 +39,23 @@ class GroupManager: BaseViewController , UICollectionViewDelegate ,UICollectionV
 
     
     @IBAction func SureSetting(_ sender: UIButton) {
+        if isCreateGroup {//允许创建群组
+            if group_name.text == "" {
+                showDialog(data: "请先输入群名称")
+                return
+            }
+            if NowMembers.count == 0 {
+                showDialog(data: "还未添加群成员")
+                return
+            }
+            createGroup(name: group_name.text!)
+        }
         
+    }
+    
+    //点击任意位置键盘弹出
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.group_name.resignFirstResponder()
     }
     //视图出现时重新刷新grid数据显示
     override func viewDidAppear(_ animated: Bool) {
@@ -53,21 +70,13 @@ class GroupManager: BaseViewController , UICollectionViewDelegate ,UICollectionV
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "群组管理"
-        // Do any additional setup after loading the view.
-        if defaults.string(forKey: GROUPID_KEY) != nil{//本地有群组数据
-            MyGroupInfo.groupId = defaults.string(forKey: GROUPID_KEY)!
-            MyGroupInfo.name = defaults.string(forKey: GROUPNAME_KEY)!
-        }else{//本地无保存的群组数据-------->获取群组数据------>成功（获取）
-            
-        }
-        
         // 添加 TextFeild 的左边距
         group_name.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 10))
         group_name.leftViewMode = .always
         GroupMemberLists.backgroundColor = UIColor(red: 0.973, green: 0.976, blue: 0.976, alpha: 1)
         addgroupmemberlabel.backgroundColor = UIColor(red: 0.973, green: 0.976, blue: 0.976, alpha: 1)
         addgroupmemberlabel.textColor = UIColor(red: 0.773, green: 0.776, blue: 0.776, alpha: 1)
-        
+        group_name.textColor = UIColor(red: 0.773, green: 0.776, blue: 0.776, alpha: 1)
         let layout = UICollectionViewFlowLayout()
         layout.itemSize = CGSize(width:60,height:60)
         //列间距,行间距,偏移
@@ -83,9 +92,20 @@ class GroupManager: BaseViewController , UICollectionViewDelegate ,UICollectionV
         GroupMemberLists.register(nibCell, forCellWithReuseIdentifier:GROUP_MEMBER_CELL)
         GroupMemberLists.reloadData()
         self.view.addSubview(GroupMemberLists)
-        
         mainViewController = self.navigationController!.viewControllers[0] as! ViewController //取得ViewContrallor实例
         
+        // ------------初始化数据显示-------------------
+        if defaults.string(forKey: GROUPID_KEY) != nil{//本地有群组数据(id,name)---->获取成员列表
+            MyGroupInfo.groupId = defaults.string(forKey: GROUPID_KEY)!
+            MyGroupInfo.name = defaults.string(forKey: GROUPNAME_KEY)!
+            self.group_name.text = MyGroupInfo.name
+            self.group_name.isEnabled = false
+            self.getGroupMembers(MyGroupInfo.groupId)
+            GroupMemberLists.reloadData()
+            
+        }else{//本地无保存的群组数据-------->获取群组数据------>有群组（获取成员列表） ： 无群组(准备创建群组)
+            getMyGroupAndGroupMembers()
+        }
         
     }
 
@@ -138,7 +158,6 @@ class GroupManager: BaseViewController , UICollectionViewDelegate ,UICollectionV
         alertController.addAction(maction)
         self.present(alertController, animated: true, completion: nil)
     }
-    
 }
 
 extension GroupManager : MessageDelegete {
@@ -156,37 +175,47 @@ extension GroupManager : MessageDelegete {
     }
    //获取我加入的群----->此例子中只允许加入一个群
     func getMyGroupAndGroupMembers(){
-        
+        showPrint("获取群列表")
         mainViewController.mAppManager.etManager.getGroups() { (groups, error) -> Void in
             if error == nil {
-                if groups!.count > 0 {//群已建立---->获取群信息
+                if groups!.count > 0 {//群已建立---->获取群信息---->获取群成员列表
                     self.MyGroupInfo = groups![0]
                     self.getGroupMembers(self.MyGroupInfo.groupId)
                     self.group_name.text = self.MyGroupInfo.name
                     self.group_name.isEnabled = false
+                    self.group_name.text = self.MyGroupInfo.name
                     
                     // - 保存groupname groupid 到偏好
                     self.defaults.set(groups![0].groupId, forKey: GROUPID_KEY)
                     self.defaults.set(groups![0].name, forKey: GROUPNAME_KEY)
                     
+                    self.getGroupMembers(self.MyGroupInfo.groupId)
+                    
                 }else{//没有加入群------>准备创建群
                     self.group_name.isEnabled = true
+                    self.isCreateGroup = true
+                    
                 }
             } else {
                 self.showPrint("\(String(describing: error))")
-                 SVProgressHUD.showError(withStatus: "获取群组信息失败！")
+                SVProgressHUD.showError(withStatus: "获取群组信息失败！")
             }
         }
-
     }
-    // 获取群列表
+    // 获取群成员
     func getGroupMembers(_ groupId:String){
+        showPrint("获取群成员")
+        SVProgressHUD.show(withStatus: "获取群成员... ")
         mainViewController.mAppManager.etManager.getGroupMembers(groupId) { (member, createId, error) in
             if error == nil {//查询成员成功
                 for item in member! {
-                    self.NowMembers += [item.userID]                    
+                    self.NowMembers += [item.userID]
+                    self.showPrint("nickname \(item.nickName)  username: \(item.userName) uid: \(item.userID)" )
                 }
+                SVProgressHUD.dismiss()
+                self.GroupMemberLists.reloadData()
             } else {//查询成员失败
+                self.showPrint("查询群成员出错 \(String(describing: error))")
                 SVProgressHUD.showError(withStatus: "查询群成员出错！")
             }
         }
@@ -198,13 +227,14 @@ extension GroupManager : MessageDelegete {
             return
         }
         SVProgressHUD.show(withStatus: "创建中...")
+        showPrint("创建群")
         mainViewController.mAppManager.etManager.createGroup(name, userList: self.NowMembers) { (group, error) in
             guard error == nil else {//创建失败
                 SVProgressHUD.showError(withStatus: "创建失败")
                 return
             }
            SVProgressHUD.showSuccess(withStatus: "创建成功")
-            
+           self.isCreateGroup = false //不能再创建群组
            self.MyGroupInfo = group!
             
             // - 保存groupname groupid 到偏好
@@ -212,17 +242,7 @@ extension GroupManager : MessageDelegete {
            self.defaults.set(group!.name, forKey: GROUPNAME_KEY)
         }
     }
-    // - 添加群成员(每次添加一个)
-    func addGroupMember(userId:String){
-        SVProgressHUD.show(withStatus: "添加中...")
-        mainViewController.mAppManager.etManager.addGroupMembers(self.MyGroupInfo.groupId, userList: [userId]) { (usersInfo, error) in
-            if error == nil {//添加成功
-               SVProgressHUD.showSuccess(withStatus: "添加成功")
-            } else {//添加失败
-               SVProgressHUD.showSuccess(withStatus: "添加失败")
-            }
-        }
-    }
+  
     // - 删除群成员(每次删除一个)
     func deleteGroupMember(userId:String){
         SVProgressHUD.show(withStatus: "删除中...")
