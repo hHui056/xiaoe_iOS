@@ -277,7 +277,6 @@ class ViewController: BaseViewController {
             }
         }
     }
-    
     // - 获取设备连接状态
     func getDeviceState(){
         mAppManager.getDeviceState(uid: self.DeviceUid)

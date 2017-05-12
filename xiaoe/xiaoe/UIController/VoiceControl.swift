@@ -8,24 +8,26 @@
 
 import UIKit
 
-class VoiceControl: BaseViewController , IFlySpeechRecognizerDelegate {
+class VoiceControl: BaseViewController , IFlyRecognizerViewDelegate {
+    let TAG = "VoiceControl"
     
+    // - 测试appid最多访问500次语音服务
     let APPID = "appid=5912a568"
     
-    var iflySpeechRecognizer : IFlySpeechRecognizer!
+    var iflyRecognizerView:IFlyRecognizerView!
     
     var resultText = ""
     
     var isRecongnizer = false
     
     @IBAction func start() {
-        iflySpeechRecognizer.startListening()
-    
+        
+       iflyRecognizerView.start()
     }
     
     
     @IBAction func stop() {
-         iflySpeechRecognizer.stopListening()
+        iflyRecognizerView.cancel()
     }
     
     
@@ -35,57 +37,43 @@ class VoiceControl: BaseViewController , IFlySpeechRecognizerDelegate {
         super.viewDidLoad()
         self.title = "语音控制"
         // Do any additional setup after loading the view.
-        IFlySpeechUtility.createUtility(APPID)
         
-        self.iflySpeechRecognizer = IFlySpeechRecognizer.sharedInstance() as IFlySpeechRecognizer
-        self.iflySpeechRecognizer.delegate = self
-        self.iflySpeechRecognizer.setParameter("iat", forKey: IFlySpeechConstant.ifly_DOMAIN())
-        self.iflySpeechRecognizer.setParameter("16000", forKey: IFlySpeechConstant.sample_RATE())
-        self.iflySpeechRecognizer.setParameter("plain", forKey: IFlySpeechConstant.result_TYPE())
-        self.iflySpeechRecognizer.setParameter("-1", forKey: IFlySpeechConstant.speech_TIMEOUT())
-        self.iflySpeechRecognizer.setParameter("8000", forKey: IFlySpeechConstant.vad_EOS())
-        self.iflySpeechRecognizer.setParameter("8000", forKey: IFlySpeechConstant.vad_BOS())
-        self.iflySpeechRecognizer.setParameter("500000", forKey: IFlySpeechConstant.speech_TIMEOUT())
-        self.iflySpeechRecognizer.setParameter("50000", forKey: IFlySpeechConstant.net_TIMEOUT())
+        IFlySpeechUtility.createUtility(APPID)
+     
+        
+        self.iflyRecognizerView = IFlyRecognizerView.init(center: self.view.center)as IFlyRecognizerView
+        self.iflyRecognizerView.delegate = self
+        self.iflyRecognizerView.setParameter("iat", forKey: IFlySpeechConstant.ifly_DOMAIN())
+        self.iflyRecognizerView.setParameter("16000", forKey: IFlySpeechConstant.sample_RATE())
+        // | result_type   | 返回结果的数据格式 plain,只支持plain
+        self.iflyRecognizerView.setParameter("plain", forKey: IFlySpeechConstant.result_TYPE())
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-    func onResults(_ results: [Any]!, isLast: Bool) {//语音识别结果
+    // - 语音识别结果
+    func onResult(_ resultArray: [Any]!, isLast: Bool) {
+        
         var resultStr : String = ""
-        if results != nil {
-            let resultDic : Dictionary<String, String> = results[0] as! Dictionary<String, String>
+        if resultArray != nil {
+            let resultDic : Dictionary<String, String> = resultArray[0] as! Dictionary<String, String>
             
             for key in resultDic.keys {
                 resultStr += key
+                showPrint(resultStr)
             }
         }
-        
-        if resultText != "" {
-            if (resultText as NSString).substring(with: NSMakeRange( resultText.characters.count - 1, 1)) != "," {
-                resultText += ","
-            }
-        }
-        
         resultText += resultStr
         result.text = resultText
-        
-        if isRecongnizer {
-            iflySpeechRecognizer.startListening()
-        } else {
-            iflySpeechRecognizer.stopListening()
-            if resultText != "" {
-                resultText = (resultText as NSString).substring(with: NSMakeRange( 0, resultText.characters.count - 1))
-                result.text = resultText
-            }
-        }
+    }
+    // - 语音识别出错
+    func onError(_ error: IFlySpeechError!) {
+        showPrint("error is \(error)")
     }
     
-    func onError(_ errorCode: IFlySpeechError!) { //语音识别错误
-        
+    func showPrint(_ data:String){
+        print("\(TAG) \(data)\n")
     }
-
 }
