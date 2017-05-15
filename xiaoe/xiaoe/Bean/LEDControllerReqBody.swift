@@ -15,26 +15,26 @@ class LEDControllerReqBody:Body{
     let type : UInt8 = 0x40
     //转为gbk 字节数组
     override func toByteArray() -> [UInt8]? {
-        var buffers : [UInt8] = [UInt8](repeating: 0x00,count: data_length-1)
+//        var buffers : [UInt8] = [UInt8](repeating: 0x00,count: data_length-1)
         var result :  [UInt8] = [UInt8](repeating: 0x00,count: data_length)
-        result[0] = type
-        
-        let enc = CFStringConvertEncodingToNSStringEncoding(UInt32(CFStringEncodings.HZ_GB_2312.rawValue))
-        let y : UnsafeMutablePointer<Int> = UnsafeMutablePointer<Int>.allocate(capacity: data_length-1)
-        let afterRange = content.startIndex..<content.endIndex
-        let x : UnsafeMutablePointer<Range<String.Index>> = UnsafeMutablePointer<Range<String.Index>>.allocate(capacity: data_length-1)
-       
-        let isHave = content.getBytes(&buffers, maxLength: data_length-1, usedLength: y , encoding: String.Encoding(rawValue: enc), range: afterRange, remaining: x)
-        if isHave {
-            var i = 0
-            var index = 1
-            repeat{
-               result[index] = buffers[i]
-                i += 1
-                index += 1
-            }while i < buffers.count
-        }
-        print("return result is : \(result)")
+//        result[0] = type
+//        
+//        let enc = CFStringConvertEncodingToNSStringEncoding(UInt32(CFStringEncodings.HZ_GB_2312.rawValue))
+//        let y : UnsafeMutablePointer<Int> = UnsafeMutablePointer<Int>.allocate(capacity: data_length-1)
+//        let afterRange = content.startIndex..<content.endIndex
+//        let x : UnsafeMutablePointer<Range<String.Index>> = UnsafeMutablePointer<Range<String.Index>>.allocate(capacity: data_length-1)
+//       
+//        let isHave = content.getBytes(&buffers, maxLength: data_length-1, usedLength: y , encoding: String.Encoding(rawValue: enc), range: afterRange, remaining: x)
+//        if isHave {
+//            var i = 0
+//            var index = 1
+//            repeat{
+//               result[index] = buffers[i]
+//                i += 1
+//                index += 1
+//            }while i < buffers.count
+//        }
+//        print("return result is : \(result)")
         return result
     }
     init(content:String){

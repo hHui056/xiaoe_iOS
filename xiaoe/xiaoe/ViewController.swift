@@ -163,18 +163,19 @@ class ViewController: BaseViewController {
     }
     //多彩灯光
     func contralLight(){
-        SVProgressHUD.show(withStatus: "查询中...")
-        let instruction = Instruction.Builder().setCmd(cmd: Instruction.Cmd.CONTROL).setBody(body: LEDControllerReqBody(content:"这是中文")).createInstruction()
-        
-        let message = ETMessage(bytes : instruction!.toByteArray())
-        print("发送的byte是: \(instruction!.toByteArray())")
-        mAppManager.etManager.chatTo(DeviceUid, message: message) { (error) in
-            guard error == nil else {
-                print("chatto error \(error!)")
-                return
-            }
-            print("chatto [\(self.DeviceUid)], content: \(message) ")
-        }
+//        SVProgressHUD.show(withStatus: "查询中...")
+//        let instruction = Instruction.Builder().setCmd(cmd: Instruction.Cmd.CONTROL).setBody(body: LEDControllerReqBody(content:"这是中文")).createInstruction()
+//        
+//        let message = ETMessage(bytes : instruction!.toByteArray())
+//        print("发送的byte是: \(instruction!.toByteArray())")
+//        mAppManager.etManager.chatTo(DeviceUid, message: message) { (error) in
+//            guard error == nil else {
+//                print("chatto error \(error!)")
+//                return
+//            }
+//            print("chatto [\(self.DeviceUid)], content: \(message) ")
+//        }
+        showControlLightDialog()
     }
     //查询大气压
     func queryatmos(){
@@ -292,8 +293,128 @@ class ViewController: BaseViewController {
             
         }
     }
+    let emptyView = UIView()
+    let LightControlView = UIView()
+    let MypieChartView = PieChartView()
+    let choicelightlabel = UILabel()
+    let backHome = UIButton()
+    let slideView = UIView()
+  
+    //显示控制灯光弹窗
+    func showControlLightDialog(){
+        
+        
+        // 定义灯光控制视图的位置和大小
+        let originLightControl = CGPoint(x: 0.026 * self.view.frame.width, y: 0.139 * self.view.frame.height)
+        let sizeLightControl = CGSize(width: 0.948 * self.view.frame.width, height: 0.643 * self.view.frame.height)
+        // 定义手势动作并关联手势触发的行为
+        // let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissLightControl))
+        
+        LightControlView.frame = CGRect(origin: originLightControl, size: sizeLightControl)
+        LightControlView.backgroundColor = UIColor.white
+        LightControlView.layer.cornerRadius = 11.0  //为view设置圆角
+        
+        // - 定义饼状图的大小
+        let piemargin = CGPoint(x: 0.103 * self.view.frame.width, y: 0.048 * self.view.frame.height)
+        let piesize = CGSize(width: 0.733 * self.view.frame.width, height: 0.41 * self.view.frame.height)
+        MypieChartView.frame = CGRect(origin:piemargin,size:piesize)
+        
+        // - 定义《选择灯光颜色》label大小、位置、文字颜色
+        let labelmargin = CGPoint(x: 0.375 * self.view.frame.width, y: 0.505 * self.view.frame.height)
+        let labelsize = CGSize(width: 0.246 * self.view.frame.width, height: 0.03 * self.view.frame.height)
+        choicelightlabel.text = "选择灯光颜色"
+        choicelightlabel.textColor = UIColor(red:163/255,green:163/255,blue:163/255,alpha:1.0)
+        choicelightlabel.font = UIFont(name:"Zapfino", size:13)
+        choicelightlabel.frame = CGRect(origin:labelmargin,size:labelsize)
+        
+        // - 添加分割线
+        let slidemargin = CGPoint(x: 0, y: 0.562 * self.view.frame.height)
+        let slidesize = CGSize(width: LightControlView.frame.width, height: 1.0)
+        slideView.backgroundColor = UIColor.gray
+        slideView.frame = CGRect(origin:slidemargin,size:slidesize)
+        
+        
+        // - 定义《返回首页》Button大小、位置、文字颜色、点击事件
+        let buttonmargin = CGPoint(x: 0, y: 0.563 * self.view.frame.height)
+        let buttonsize = CGSize(width: LightControlView.frame.width, height: 0.0814 * self.view.frame.height)
+        backHome.setTitle("返回首页", for: .normal)
+        backHome.setTitleColor(UIColor(red:255/255,green:153/255,blue:0,alpha:1.0), for: .normal)
+        backHome.frame = CGRect(origin:buttonmargin,size:buttonsize)
+        backHome.addTarget(self, action: #selector(dismissLightControl), for: .touchUpInside)
+       
+        // 设置空视图的大小，背景，打开交互，添加手势
+        emptyView.frame = self.view.frame
+        emptyView.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.4)
+        emptyView.isUserInteractionEnabled = true
+       // emptyView.addGestureRecognizer(tapGestureRecognizer)
+        
+        setTestData(piechart:MypieChartView)
+        
+        LightControlView.addSubview(MypieChartView)
+        LightControlView.addSubview(choicelightlabel)
+        LightControlView.addSubview(slideView)
+        LightControlView.addSubview(backHome)
+        emptyView.addSubview(LightControlView)
+        self.view.addSubview(emptyView)
+        
+    }
+    //
+    func dismissLightControl() {
+        slideView.removeFromSuperview()
+        backHome.removeFromSuperview()
+        choicelightlabel.removeFromSuperview()
+        MypieChartView.removeFromSuperview()
+        LightControlView.removeFromSuperview()
+        emptyView.removeFromSuperview()
+    }
+    
     func showLog(_ data:String){
         NSLog(data)
+    }
+    
+    
+    func setTestData(piechart:PieChartView){
+        var yValues = [PieChartDataEntry]()
+        // 最好从0 开始. 否则第一个将失去点击效果, 并出现bug...
+        for i in 0...11 {
+            // 占比数据
+            yValues.append(PieChartDataEntry(value:1.0,label:"\(i)"))
+            
+            
+        }
+        
+        //
+        let dataSet: PieChartDataSet = PieChartDataSet.init(values: yValues, label: "");
+        // 空隙
+        dataSet.sliceSpace = 3.0
+        var colors = [UIColor]()
+        colors.append(UIColor (red: 0.5098, green: 0.1137, blue: 0.7451, alpha: 1.0 ))
+        colors.append(UIColor (red: 250/255, green: 40/255, blue: 11/255, alpha: 1.0 ))
+        colors.append(UIColor (red: 255/255, green: 126/255, blue: 0/255, alpha: 1.0 ))
+        colors.append(UIColor (red: 255/255, green: 195/255, blue: 13/255, alpha: 1.0 ))
+        colors.append(UIColor (red: 254/255, green: 255/255, blue: 51/255, alpha: 1.0 ))
+        colors.append(UIColor (red: 200/255, green: 253/255, blue: 58/255, alpha: 1.0 ))
+        colors.append(UIColor (red: 114/255, green: 244/255, blue: 36/255, alpha: 1.0 ))
+        colors.append(UIColor (red: 0/255, green: 209/255, blue: 103/255, alpha: 1.0 ))
+        colors.append(UIColor (red: 2/255, green: 198/255, blue: 227/255, alpha: 1.0 ))
+        colors.append(UIColor (red: 5/255, green: 118/255, blue: 247/255, alpha: 1.0 ))
+        colors.append(UIColor (red: 65/255, green: 0/255, blue: 251/255, alpha: 1.0 ))
+        colors.append(UIColor (red: 150/255, green: 0/255, blue: 255/255, alpha: 1.0 ))
+        dataSet.colors = colors
+        
+        
+        dataSet.valueLinePart1OffsetPercentage = 0.0;
+        dataSet.valueLinePart1Length = 0.0;
+        dataSet.valueLinePart2Length = 0.0;
+        dataSet.yValuePosition = .insideSlice
+        
+        
+        let data = PieChartData(dataSet: dataSet)
+        // - 这里还没弄明白，暂设文字描述为透明色不显示（解决内部会显示百分比数字问题）
+        data.setValueTextColor(UIColor.clear)
+        
+        piechart.legend.enabled = false // 不显示下方说明
+        piechart.data = data
     }
 }
 
