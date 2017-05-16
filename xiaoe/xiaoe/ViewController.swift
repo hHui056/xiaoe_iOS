@@ -374,13 +374,12 @@ class ViewController: BaseViewController {
     
     
     func setTestData(piechart:PieChartView){
+        piechart.delegate = self
         var yValues = [PieChartDataEntry]()
         // 最好从0 开始. 否则第一个将失去点击效果, 并出现bug...
         for i in 0...11 {
             // 占比数据
-            yValues.append(PieChartDataEntry(value:1.0,label:"\(i)"))
-            
-            
+            yValues.append(PieChartDataEntry(value:1.0,label:LIGHT_COLORS[i]))
         }
         
         //
@@ -388,7 +387,7 @@ class ViewController: BaseViewController {
         // 空隙
         dataSet.sliceSpace = 3.0
         var colors = [UIColor]()
-        colors.append(UIColor (red: 0.5098, green: 0.1137, blue: 0.7451, alpha: 1.0 ))
+        colors.append(UIColor (red: 230/255, green: 29/255, blue: 190/255, alpha: 1.0 ))
         colors.append(UIColor (red: 250/255, green: 40/255, blue: 11/255, alpha: 1.0 ))
         colors.append(UIColor (red: 255/255, green: 126/255, blue: 0/255, alpha: 1.0 ))
         colors.append(UIColor (red: 255/255, green: 195/255, blue: 13/255, alpha: 1.0 ))
@@ -402,10 +401,10 @@ class ViewController: BaseViewController {
         colors.append(UIColor (red: 150/255, green: 0/255, blue: 255/255, alpha: 1.0 ))
         dataSet.colors = colors
         
-        
-        dataSet.valueLinePart1OffsetPercentage = 0.0;
-        dataSet.valueLinePart1Length = 0.0;
-        dataSet.valueLinePart2Length = 0.0;
+        dataSet.selectionShift = 12
+        dataSet.valueLinePart1OffsetPercentage = 0.0
+        dataSet.valueLinePart1Length = 0.0
+        dataSet.valueLinePart2Length = 0.0
         dataSet.yValuePosition = .insideSlice
         
         
@@ -437,6 +436,11 @@ extension ViewController:HeHuiDelegete{
                 let airbody = instruction!.getBody() as! AirResBody
                 let showstr = "大气压 (Pa) \(airbody.air) \n\n海拔 (m) \(airbody.high)"
                 showDialog(data: showstr)
+            }else if instruction!.getBody() is RGBControllerResBody {
+                let rgbbody = instruction!.getBody() as! RGBControllerResBody
+                if !rgbbody.isSuccess {
+                    showDialog(data: "控制灯光失败！")
+                }
             }
     }
     func onBroken(server: ETServer, error: NSError?) {
@@ -493,8 +497,40 @@ extension ViewController:HeHuiDelegete{
         print("user : \(userID) state : \(state)")
     }
 }
-extension ViewController:MessageDelegete{
+
+extension ViewController:MessageDelegete,ChartViewDelegate{
     func sendMessage(message: String) {
         print("扫描结果是 \(message)")
+    }
+    // - 选择了灯光颜色后回调
+    func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight) {
+        let pieentry = entry as! PieChartDataEntry
+        print("piechartView中选中的是 \(pieentry.label!)")
+        
+        let instruction = Instruction.Builder().setCmd(cmd: Instruction.Cmd.CONTROL).setBody(body: RGBControllerReqBody(color:pieentry.label!)).createInstruction()
+        
+        let message = ETMessage(bytes : instruction!.toByteArray())
+        
+        
+        mAppManager.etManager.chatTo(DeviceUid, message: message) { (error) in
+            guard error == nil else {
+                SVProgressHUD.showError(withStatus: "查询失败！")
+                return
+            }
+            
+            print("chatto [\(self.DeviceUid)], content: \(message) ")
+        }
+    }
+    
+    func chartValueNothingSelected(_ chartView: ChartViewBase) {
+        
+    }
+    
+    func chartScaled(_ chartView: ChartViewBase, scaleX: CGFloat, scaleY: CGFloat) {
+        
+    }
+    
+    func chartTranslated(_ chartView: ChartViewBase, dX: CGFloat, dY: CGFloat) {
+        
     }
 }

@@ -108,7 +108,14 @@ class InstructionParser{
             }
         case Instruction.Cmd.CONTROL_BACK://控制指令反馈
             print("返回的为控制指令反馈")
-            
+            if data[0] == Instruction.RequestType.RGB {//RGB控制反馈
+                if data[1] == 0x00 {
+                    body = RGBControllerResBody()
+                    body!.parseContent(content: data)
+                    instruction.body = body
+                    body!.setIsAvailable(isavailable: true)
+                }
+            }
         default:
             print("")
         }

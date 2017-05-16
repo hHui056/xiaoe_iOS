@@ -196,6 +196,8 @@
 		11529E311EB13A5500E56C24 /* xiaoeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11529E301EB13A5500E56C24 /* xiaoeUITests.swift */; };
 		115B4A171EB8F22F008B3B63 /* VisualInteractive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115B4A161EB8F22F008B3B63 /* VisualInteractive.swift */; };
 		115B4A191EB8F32B008B3B63 /* VisualInteractive.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 115B4A181EB8F32B008B3B63 /* VisualInteractive.storyboard */; };
+		1184CA6D1ECA860D00444144 /* RGBControllerReqBody.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1184CA6C1ECA860D00444144 /* RGBControllerReqBody.swift */; };
+		1184CA771ECA8E8E00444144 /* RGBControllerResBody.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1184CA761ECA8E8E00444144 /* RGBControllerResBody.swift */; };
 		11AB7D401EB94ECB000D870D /* ETILinkSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11AB7D3F1EB94ECB000D870D /* ETILinkSDK.framework */; };
 		11AB7D411EB94ED0000D870D /* ETILinkSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11AB7D3F1EB94ECB000D870D /* ETILinkSDK.framework */; };
 		11AB7D421EB94ED0000D870D /* ETILinkSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 11AB7D3F1EB94ECB000D870D /* ETILinkSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -516,6 +518,8 @@
 		11529E321EB13A5500E56C24 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		115B4A161EB8F22F008B3B63 /* VisualInteractive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VisualInteractive.swift; sourceTree = "<group>"; };
 		115B4A181EB8F32B008B3B63 /* VisualInteractive.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = VisualInteractive.storyboard; sourceTree = "<group>"; };
+		1184CA6C1ECA860D00444144 /* RGBControllerReqBody.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RGBControllerReqBody.swift; sourceTree = "<group>"; };
+		1184CA761ECA8E8E00444144 /* RGBControllerResBody.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RGBControllerResBody.swift; sourceTree = "<group>"; };
 		11AB7D3F1EB94ECB000D870D /* ETILinkSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ETILinkSDK.framework; sourceTree = "<group>"; };
 		11B9100A1EBBC82D009F845F /* SVProgressHUD.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SVProgressHUD.framework; sourceTree = "<group>"; };
 		11B9100E1EBBD4BF009F845F /* LEDControllerReqBody.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LEDControllerReqBody.swift; sourceTree = "<group>"; };
@@ -595,6 +599,8 @@
 				11B9100E1EBBD4BF009F845F /* LEDControllerReqBody.swift */,
 				11C388181EC29C43002729A3 /* AirReqBody.swift */,
 				11C3881A1EC29C56002729A3 /* AirResBody.swift */,
+				1184CA6C1ECA860D00444144 /* RGBControllerReqBody.swift */,
+				1184CA761ECA8E8E00444144 /* RGBControllerResBody.swift */,
 			);
 			name = Bean;
 			path = xiaoe/Bean;
@@ -1297,6 +1303,7 @@
 				1131EDDA1ECA1C0400AAE95D /* ViewPortHandler.swift in Sources */,
 				1131EDB01ECA1C0400AAE95D /* AnimatedMoveViewJob.swift in Sources */,
 				1131EDA01ECA1C0400AAE95D /* CombinedHighlighter.swift in Sources */,
+				1184CA771ECA8E8E00444144 /* RGBControllerResBody.swift in Sources */,
 				1131ED5F1ECA1C0400AAE95D /* PieChartView.swift in Sources */,
 				1131EDB31ECA1C0400AAE95D /* MoveViewJob.swift in Sources */,
 				1131EDAD1ECA1C0400AAE95D /* CombinedChartDataProvider.swift in Sources */,
@@ -1423,6 +1430,7 @@
 				1131ED6A1ECA1C0400AAE95D /* MarkerImage.swift in Sources */,
 				1131ED8A1ECA1C0400AAE95D /* ScatterChartDataSet.swift in Sources */,
 				11D6ECD61EC3850D00515C52 /* EspTouchManager.swift in Sources */,
+				1184CA6D1ECA860D00444144 /* RGBControllerReqBody.swift in Sources */,
 				1131ED941ECA1C0400AAE95D /* IRadarChartDataSet.swift in Sources */,
 				1131EDBB1ECA1C0400AAE95D /* ChartDataRendererBase.swift in Sources */,
 				1131EDD21ECA1C0400AAE95D /* YAxisRendererHorizontalBarChart.swift in Sources */,

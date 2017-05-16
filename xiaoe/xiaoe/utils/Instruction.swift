@@ -177,5 +177,6 @@ class Cmd {
         public static  let TEMPERA : UInt8 = 0x21  //温度
         public static  let  HUM : UInt8 = 0x22  //湿度
         public static  let  AIR : UInt8 = 0x30  //大气压
+        public static  let RGB : UInt8 = 0x10  //RGB控制
     }
 }
