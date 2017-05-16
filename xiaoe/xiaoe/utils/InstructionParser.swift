@@ -88,7 +88,7 @@ class InstructionParser{
         
         switch instruction.getCmd() {
         case Instruction.Cmd.QUERY_BACK://查询指令反馈
-            if data[0] == Instruction.RequestType.BOTH || data[0] == Instruction.RequestType.HUM || data[0] == Instruction.RequestType.TEMPERA {
+            if data[0] == Instruction.RequestType.BOTH || data[0] == Instruction.RequestType.HUM || data[0] == Instruction.RequestType.TEMPERA {//温湿度
                             print("解析温湿度查询应答报文");
                             if data[1] == 0x00 {
                                 body = TemperatureAndHumidityResBody()
@@ -98,7 +98,7 @@ class InstructionParser{
                             } else {
                                 print("发送报文不正确 \(data[1])")
                             }
-            }else if data[0] == Instruction.RequestType.AIR {
+            }else if data[0] == Instruction.RequestType.AIR {//大气压
                 if data[1] == 0x00 {
                 body = AirResBody()
                     body!.parseContent(content:data)
@@ -110,7 +110,16 @@ class InstructionParser{
             print("返回的为控制指令反馈")
             if data[0] == Instruction.RequestType.RGB {//RGB控制反馈
                 if data[1] == 0x00 {
+                    print("RGB控制成功")
                     body = RGBControllerResBody()
+                    body!.parseContent(content: data)
+                    instruction.body = body
+                    body!.setIsAvailable(isavailable: true)
+                }
+            }else if data[0] == Instruction.RequestType.LED {//LED控制 反馈                
+                if data[1] == 0x00 {
+                     print("LED控制成功")
+                    body = LEDControllerResBody()
                     body!.parseContent(content: data)
                     instruction.body = body
                     body!.setIsAvailable(isavailable: true)
@@ -119,8 +128,6 @@ class InstructionParser{
         default:
             print("")
         }
-        
-
          return body != nil && body!.isAvailable()
     }
 }

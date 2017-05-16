@@ -29,5 +29,6 @@
 #import "iflyMSC/IFlyTextUnderstander.h"
 
 #import "iflyMSC/IFlySetting.h"
+#import "iconv.h"
 
 #endif /* xiaoe_Bridging_Header_h */

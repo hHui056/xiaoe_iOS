@@ -92,7 +92,7 @@ class GroupManager: BaseViewController , UICollectionViewDelegate ,UICollectionV
         GroupMemberLists.register(nibCell, forCellWithReuseIdentifier:GROUP_MEMBER_CELL)
         GroupMemberLists.reloadData()
         self.view.addSubview(GroupMemberLists)
-        mainViewController = self.navigationController!.viewControllers[0] as! ViewController //取得ViewContrallor实例
+        mainViewController = self.navigationController!.viewControllers[0] as! ViewController //取得ViewContrallor实例（使用appManage对象）
         
         // ------------初始化数据显示-------------------
         if defaults.string(forKey: GROUPID_KEY) != nil{//本地有群组数据(id,name)---->获取成员列表
@@ -102,7 +102,6 @@ class GroupManager: BaseViewController , UICollectionViewDelegate ,UICollectionV
             self.group_name.isEnabled = false
             self.getGroupMembers(MyGroupInfo.groupId)
             GroupMemberLists.reloadData()
-            
         }else{//本地无保存的群组数据-------->获取群组数据------>有群组（获取成员列表） ： 无群组(准备创建群组)
             getMyGroupAndGroupMembers()
         }

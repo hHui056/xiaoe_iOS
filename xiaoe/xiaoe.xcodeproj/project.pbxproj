@@ -198,6 +198,7 @@
 		115B4A191EB8F32B008B3B63 /* VisualInteractive.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 115B4A181EB8F32B008B3B63 /* VisualInteractive.storyboard */; };
 		1184CA6D1ECA860D00444144 /* RGBControllerReqBody.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1184CA6C1ECA860D00444144 /* RGBControllerReqBody.swift */; };
 		1184CA771ECA8E8E00444144 /* RGBControllerResBody.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1184CA761ECA8E8E00444144 /* RGBControllerResBody.swift */; };
+		1184CA7B1ECB6A3300444144 /* LEDControllerResBody.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1184CA7A1ECB6A3300444144 /* LEDControllerResBody.swift */; };
 		11AB7D401EB94ECB000D870D /* ETILinkSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11AB7D3F1EB94ECB000D870D /* ETILinkSDK.framework */; };
 		11AB7D411EB94ED0000D870D /* ETILinkSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11AB7D3F1EB94ECB000D870D /* ETILinkSDK.framework */; };
 		11AB7D421EB94ED0000D870D /* ETILinkSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 11AB7D3F1EB94ECB000D870D /* ETILinkSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -520,6 +521,8 @@
 		115B4A181EB8F32B008B3B63 /* VisualInteractive.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = VisualInteractive.storyboard; sourceTree = "<group>"; };
 		1184CA6C1ECA860D00444144 /* RGBControllerReqBody.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RGBControllerReqBody.swift; sourceTree = "<group>"; };
 		1184CA761ECA8E8E00444144 /* RGBControllerResBody.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RGBControllerResBody.swift; sourceTree = "<group>"; };
+		1184CA7A1ECB6A3300444144 /* LEDControllerResBody.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LEDControllerResBody.swift; sourceTree = "<group>"; };
+		1184CA841ECB87F800444144 /* libiconv.2.4.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libiconv.2.4.0.tbd; path = usr/lib/libiconv.2.4.0.tbd; sourceTree = SDKROOT; };
 		11AB7D3F1EB94ECB000D870D /* ETILinkSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ETILinkSDK.framework; sourceTree = "<group>"; };
 		11B9100A1EBBC82D009F845F /* SVProgressHUD.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SVProgressHUD.framework; sourceTree = "<group>"; };
 		11B9100E1EBBD4BF009F845F /* LEDControllerReqBody.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LEDControllerReqBody.swift; sourceTree = "<group>"; };
@@ -597,6 +600,7 @@
 				112D8CB21EBAA18A00F3AAD1 /* TemperatureAndHumidityReqBody.swift */,
 				112D8CB81EBAB11F00F3AAD1 /* TemperatureAndHumidityResBody.swift */,
 				11B9100E1EBBD4BF009F845F /* LEDControllerReqBody.swift */,
+				1184CA7A1ECB6A3300444144 /* LEDControllerResBody.swift */,
 				11C388181EC29C43002729A3 /* AirReqBody.swift */,
 				11C3881A1EC29C56002729A3 /* AirResBody.swift */,
 				1184CA6C1ECA860D00444144 /* RGBControllerReqBody.swift */,
@@ -646,6 +650,7 @@
 		1122EA821EC3B71200AD1991 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1184CA841ECB87F800444144 /* libiconv.2.4.0.tbd */,
 				114DB6111EC3D493008211ED /* libz.1.dylib */,
 				114DB6071EC3D426008211ED /* Contacts.framework */,
 				114DB5E71EC3C289008211ED /* libc++.1.dylib */,
@@ -1313,6 +1318,7 @@
 				1131ED931ECA1C0400AAE95D /* IPieChartDataSet.swift in Sources */,
 				1131ED8B1ECA1C0400AAE95D /* IBarChartDataSet.swift in Sources */,
 				1131ED9F1ECA1C0400AAE95D /* ChartHighlighter.swift in Sources */,
+				1184CA7B1ECB6A3300444144 /* LEDControllerResBody.swift in Sources */,
 				1131EDC81ECA1C0400AAE95D /* CrossShapeRenderer.swift in Sources */,
 				1131ED661ECA1C0400AAE95D /* Description.swift in Sources */,
 				1131EDD51ECA1C0400AAE95D /* ChartUtils.swift in Sources */,

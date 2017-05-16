@@ -7,7 +7,9 @@
 //
 
 import UIKit
-class VisualInteractive: BaseViewController , ChatDataSource , UITextFieldDelegate{
+import ETILinkSDK
+import SVProgressHUD
+class VisualInteractive: BaseViewController , ChatDataSource , UITextFieldDelegate , LEDReceiveDelegete {
     
     let CELL_MESSAGE = "CELL_SHOW_MESSAGE"
     
@@ -18,12 +20,12 @@ class VisualInteractive: BaseViewController , ChatDataSource , UITextFieldDelega
     @IBOutlet weak var bottomview: UIView!
    
     @IBOutlet weak var bottomviewmargin: NSLayoutConstraint!
-   
+    
     @IBOutlet weak var input: UITextField!
     
     @IBOutlet weak var topview: UIView!
 
-    
+    var mainViewController : ViewController!
    
     var me:UserInfo!
     
@@ -44,6 +46,8 @@ class VisualInteractive: BaseViewController , ChatDataSource , UITextFieldDelega
         self.input.delegate = self
         NotificationCenter.default.addObserver(self,selector: #selector(keyboardWillChange(_:)),name: .UIKeyboardWillChangeFrame, object: nil)
         
+        mainViewController = self.navigationController!.viewControllers[0] as! ViewController //取得ViewContrallor实例（使用appManage对象）
+        mainViewController.leddelegate = self
         setupChatTable()
     }
     override func viewDidAppear(_ animated: Bool) {
@@ -58,6 +62,19 @@ class VisualInteractive: BaseViewController , ChatDataSource , UITextFieldDelega
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
+    }
+    
+    //收到led显示控制反馈
+    func onLEDReceive(body: LEDControllerResBody) {
+        if body.isSuccess {//控制成功
+            let msg = MessageItem(body:"控制成功",user:you, date:Date(timeIntervalSinceNow:0), mtype:.someone)
+            Chats.add(msg)
+            self.tableView.reloadData()
+        }else{//控制失败
+            let msg = MessageItem(body:"控制失败",user:you, date:Date(timeIntervalSinceNow:0), mtype:.someone)
+            Chats.add(msg)
+            self.tableView.reloadData()
+        }
     }
     
     //点击任意位置键盘弹出
@@ -85,8 +102,6 @@ class VisualInteractive: BaseViewController , ChatDataSource , UITextFieldDelega
             }, completion: nil)
         }
     }
-    
-   //
     func setupChatTable()
     {
         
@@ -94,7 +109,7 @@ class VisualInteractive: BaseViewController , ChatDataSource , UITextFieldDelega
         //创建一个重用的单元格
         self.tableView!.register(TableViewCell.self, forCellReuseIdentifier: "ChatCell")
         me = UserInfo(name:"Xiaoming" ,logo:("头像_设备.png"))
-        you  = UserInfo(name:"Xiaohua", logo:("xiaohua.png"))
+        you  = UserInfo(name:"Xiaohua", logo:("头像_设备.png"))
         
       
    //   let second =  MessageItem(image:UIImage(named:"sz.png")!,user:me, date:Date(timeIntervalSinceNow:-90000290), mtype:.mine)
@@ -120,14 +135,59 @@ class VisualInteractive: BaseViewController , ChatDataSource , UITextFieldDelega
     //发送消息到LED屏显示
     func chatToLed(){
         if input.text == "" {//输入为空
-            
+            return
+        }
+        if !isChinese(string: input.text!){
+            showDialog(data: "只能输入中文！")
             return
         }
         let msg = MessageItem(body:input.text! as NSString,user:me, date:Date(timeIntervalSinceNow:0), mtype:.mine)
         Chats.add(msg)
         self.tableView.reloadData()
-
+        sendMessageToLED(message: input.text!)
+        self.input.resignFirstResponder()
     }
+    // - 提示弹窗
+    func showDialog(data:String){
+        let alertController:UIAlertController = UIAlertController(title: nil, message: data, preferredStyle:  UIAlertControllerStyle.alert)
+        let maction = UIAlertAction(title: "确定", style: UIAlertActionStyle.default, handler: {(alertAction)-> Void in
+            
+            
+        })
+        alertController.addAction(maction)
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
+    func sendMessageToLED(message:String){
+        let instruction = Instruction.Builder().setCmd(cmd: Instruction.Cmd.CONTROL).setBody(body:LEDControllerReqBody(content:message)).createInstruction()
+        
+        let message = ETMessage(bytes : instruction!.toByteArray())
+        
+        
+       mainViewController.mAppManager.etManager.chatTo("Fc5wGsTuvumomVom5De2G4rEqLZHCb1iiC", message: message) { (error) in
+            guard error == nil else {
+                SVProgressHUD.showError(withStatus: "查询失败！")
+                return
+            }
+            
+            print("chatto [device], content: \(message) ")
+        }
+    }
+    
+    // - 检验是否全为中文(只支持中文GB2321编码)
+    func isChinese(string: String) -> Bool {
+        
+        for (_, value) in string.characters.enumerated() {
+            
+            if ("\u{4E00}" > value  || value > "\u{9FA5}") {//含有非中文字符
+                return false
+            }
+        }
+        return true
+    }
+    
 }
+
+
 
 

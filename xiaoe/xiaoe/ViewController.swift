@@ -28,6 +28,8 @@ class ViewController: BaseViewController {
     
      public static  var isFirstUse = false
     
+     var leddelegate : LEDReceiveDelegete?
+    
      override func viewDidLoad() {
         super.viewDidLoad()
         self.title = ""
@@ -163,18 +165,10 @@ class ViewController: BaseViewController {
     }
     //多彩灯光
     func contralLight(){
-//        SVProgressHUD.show(withStatus: "查询中...")
-//        let instruction = Instruction.Builder().setCmd(cmd: Instruction.Cmd.CONTROL).setBody(body: LEDControllerReqBody(content:"这是中文")).createInstruction()
-//        
-//        let message = ETMessage(bytes : instruction!.toByteArray())
-//        print("发送的byte是: \(instruction!.toByteArray())")
-//        mAppManager.etManager.chatTo(DeviceUid, message: message) { (error) in
-//            guard error == nil else {
-//                print("chatto error \(error!)")
-//                return
-//            }
-//            print("chatto [\(self.DeviceUid)], content: \(message) ")
-//        }
+        if !isDeviceOnline {
+            SVProgressHUD.showError(withStatus: "开发板不在线")
+            return
+        }
         showControlLightDialog()
     }
     //查询大气压
@@ -302,14 +296,9 @@ class ViewController: BaseViewController {
   
     //显示控制灯光弹窗
     func showControlLightDialog(){
-        
-        
         // 定义灯光控制视图的位置和大小
         let originLightControl = CGPoint(x: 0.026 * self.view.frame.width, y: 0.139 * self.view.frame.height)
         let sizeLightControl = CGSize(width: 0.948 * self.view.frame.width, height: 0.643 * self.view.frame.height)
-        // 定义手势动作并关联手势触发的行为
-        // let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissLightControl))
-        
         LightControlView.frame = CGRect(origin: originLightControl, size: sizeLightControl)
         LightControlView.backgroundColor = UIColor.white
         LightControlView.layer.cornerRadius = 11.0  //为view设置圆角
@@ -330,7 +319,7 @@ class ViewController: BaseViewController {
         // - 添加分割线
         let slidemargin = CGPoint(x: 0, y: 0.562 * self.view.frame.height)
         let slidesize = CGSize(width: LightControlView.frame.width, height: 1.0)
-        slideView.backgroundColor = UIColor.gray
+        slideView.backgroundColor = UIColor(red:204/255,green:204/255,blue:204/255,alpha:1.0)
         slideView.frame = CGRect(origin:slidemargin,size:slidesize)
         
         
@@ -346,8 +335,8 @@ class ViewController: BaseViewController {
         emptyView.frame = self.view.frame
         emptyView.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.4)
         emptyView.isUserInteractionEnabled = true
-       // emptyView.addGestureRecognizer(tapGestureRecognizer)
         
+        //初始化灯光显示数据
         setTestData(piechart:MypieChartView)
         
         LightControlView.addSubview(MypieChartView)
@@ -356,9 +345,8 @@ class ViewController: BaseViewController {
         LightControlView.addSubview(backHome)
         emptyView.addSubview(LightControlView)
         self.view.addSubview(emptyView)
-        
     }
-    //
+    // 移除灯光控制视图
     func dismissLightControl() {
         slideView.removeFromSuperview()
         backHome.removeFromSuperview()
@@ -374,18 +362,17 @@ class ViewController: BaseViewController {
     
     
     func setTestData(piechart:PieChartView){
-        piechart.delegate = self
+        piechart.delegate = self  //设置代理，处理灯光选择事件
         var yValues = [PieChartDataEntry]()
         // 最好从0 开始. 否则第一个将失去点击效果, 并出现bug...
         for i in 0...11 {
             // 占比数据
             yValues.append(PieChartDataEntry(value:1.0,label:LIGHT_COLORS[i]))
         }
-        
-        //
         let dataSet: PieChartDataSet = PieChartDataSet.init(values: yValues, label: "");
-        // 空隙
+        // - 扇形间间隙
         dataSet.sliceSpace = 3.0
+        // - 定义灯光颜色数据
         var colors = [UIColor]()
         colors.append(UIColor (red: 230/255, green: 29/255, blue: 190/255, alpha: 1.0 ))
         colors.append(UIColor (red: 250/255, green: 40/255, blue: 11/255, alpha: 1.0 ))
@@ -401,7 +388,7 @@ class ViewController: BaseViewController {
         colors.append(UIColor (red: 150/255, green: 0/255, blue: 255/255, alpha: 1.0 ))
         dataSet.colors = colors
         
-        dataSet.selectionShift = 12
+        dataSet.selectionShift = 12 //选中扇形半径
         dataSet.valueLinePart1OffsetPercentage = 0.0
         dataSet.valueLinePart1Length = 0.0
         dataSet.valueLinePart2Length = 0.0
@@ -414,12 +401,13 @@ class ViewController: BaseViewController {
         
         piechart.legend.enabled = false // 不显示下方说明
         piechart.data = data
+        
+        
     }
 }
 
 extension ViewController:HeHuiDelegete{
         func onMessage(type: ETMessageType, topic: String?, sender: String?, message: ETReceiveMessage) {
-       
         SVProgressHUD.dismiss()
         print("bytes是：  \(message.bytes)")
         let instruction = InstructionParser().parseInstruction(content : message.bytes)
@@ -428,19 +416,23 @@ extension ViewController:HeHuiDelegete{
                 showDialog(data: "查询失败,请确认档位和跳线帽都正确后再试")
                 return
             }
-            if instruction!.getBody() is TemperatureAndHumidityResBody {
-                let tempbody = instruction!.getBody() as! TemperatureAndHumidityResBody
+            let ResBody = instruction!.getBody()
+            if ResBody is TemperatureAndHumidityResBody {//温湿度查询反馈
+                let tempbody = ResBody as! TemperatureAndHumidityResBody
                 let showstr = "温度 (℃)  \(tempbody.tempeInt).\(tempbody.tempeDec)℃\n\n湿度 (RH) \(tempbody.humInt).\(tempbody.hunDec)%"
                 showDialog(data: showstr)
-            }else if instruction!.getBody() is AirResBody {
-                let airbody = instruction!.getBody() as! AirResBody
+            }else if ResBody is AirResBody {//大气压查询反馈
+                let airbody = ResBody as! AirResBody
                 let showstr = "大气压 (Pa) \(airbody.air) \n\n海拔 (m) \(airbody.high)"
                 showDialog(data: showstr)
-            }else if instruction!.getBody() is RGBControllerResBody {
-                let rgbbody = instruction!.getBody() as! RGBControllerResBody
+            }else if ResBody is RGBControllerResBody {//RGB灯光控制反馈
+                let rgbbody = ResBody as! RGBControllerResBody
                 if !rgbbody.isSuccess {
                     showDialog(data: "控制灯光失败！")
                 }
+            }else if ResBody is LEDControllerResBody {
+                let ledbody = ResBody as! LEDControllerResBody
+                self.leddelegate?.onLEDReceive(body: ledbody)
             }
     }
     func onBroken(server: ETServer, error: NSError?) {
@@ -517,7 +509,7 @@ extension ViewController:MessageDelegete,ChartViewDelegate{
                 SVProgressHUD.showError(withStatus: "查询失败！")
                 return
             }
-            
+          
             print("chatto [\(self.DeviceUid)], content: \(message) ")
         }
     }
@@ -533,4 +525,8 @@ extension ViewController:MessageDelegete,ChartViewDelegate{
     func chartTranslated(_ chartView: ChartViewBase, dX: CGFloat, dY: CGFloat) {
         
     }
+}
+
+protocol LEDReceiveDelegete {
+    func onLEDReceive(body:LEDControllerResBody)
 }
