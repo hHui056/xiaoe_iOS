@@ -55,10 +55,10 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="a7E-dy-D5Q" userLabel="底部View">
-                                <rect key="frame" x="0.0" y="622.5" width="375" height="39.5"/>
+                                <rect key="frame" x="0.0" y="618.5" width="375" height="43.5"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="U9g-IL-hnq" userLabel="发送">
-                                        <rect key="frame" x="290" y="0.0" width="80" height="39.5"/>
+                                        <rect key="frame" x="290" y="5" width="80" height="38.5"/>
                                         <state key="normal" title="发送" backgroundImage="发送按钮">
                                             <color key="titleColor" red="0.1215686277" green="0.1294117719" blue="0.1411764771" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         </state>
@@ -67,7 +67,7 @@
                                         </connections>
                                     </button>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="249" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="输入消息内容" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="SEJ-NW-80E">
-                                        <rect key="frame" x="5" y="0.0" width="280" height="39.5"/>
+                                        <rect key="frame" x="5" y="5" width="280" height="38.5"/>
                                         <nil key="textColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                         <textInputTraits key="textInputTraits"/>
@@ -78,20 +78,28 @@
                                     <constraint firstAttribute="trailing" secondItem="U9g-IL-hnq" secondAttribute="trailing" constant="5" id="JCF-yG-VTR"/>
                                     <constraint firstItem="U9g-IL-hnq" firstAttribute="leading" secondItem="SEJ-NW-80E" secondAttribute="trailing" constant="5" id="Lcz-Sa-xPb"/>
                                     <constraint firstAttribute="bottom" secondItem="SEJ-NW-80E" secondAttribute="bottom" id="QZj-QB-eMK"/>
-                                    <constraint firstItem="SEJ-NW-80E" firstAttribute="top" secondItem="a7E-dy-D5Q" secondAttribute="top" id="X0B-1K-b27"/>
-                                    <constraint firstItem="U9g-IL-hnq" firstAttribute="top" secondItem="a7E-dy-D5Q" secondAttribute="top" id="edK-kG-57j"/>
+                                    <constraint firstItem="SEJ-NW-80E" firstAttribute="top" secondItem="a7E-dy-D5Q" secondAttribute="top" constant="5" id="X0B-1K-b27"/>
+                                    <constraint firstItem="U9g-IL-hnq" firstAttribute="top" secondItem="a7E-dy-D5Q" secondAttribute="top" constant="5" id="edK-kG-57j"/>
                                     <constraint firstAttribute="bottom" secondItem="U9g-IL-hnq" secondAttribute="bottom" id="fhZ-en-24r"/>
                                     <constraint firstItem="SEJ-NW-80E" firstAttribute="leading" secondItem="a7E-dy-D5Q" secondAttribute="leading" constant="5" id="hKq-on-WSN"/>
                                     <constraint firstItem="U9g-IL-hnq" firstAttribute="leading" secondItem="SEJ-NW-80E" secondAttribute="trailing" constant="5" id="psy-sx-FzU"/>
                                 </constraints>
                             </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OoZ-z3-dib">
+                                <rect key="frame" x="0.0" y="185" width="375" height="433.5"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="OoZ-z3-dib" firstAttribute="top" secondItem="66K-eb-NIa" secondAttribute="bottom" id="AH0-U3-W3K"/>
                             <constraint firstAttribute="trailing" secondItem="a7E-dy-D5Q" secondAttribute="trailing" id="BHU-7D-v5m"/>
                             <constraint firstItem="66K-eb-NIa" firstAttribute="top" secondItem="gMf-4Y-xdS" secondAttribute="top" id="BcH-Ck-aJ7"/>
+                            <constraint firstItem="OoZ-z3-dib" firstAttribute="leading" secondItem="gMf-4Y-xdS" secondAttribute="leading" id="HSO-Jq-3QX"/>
                             <constraint firstItem="66K-eb-NIa" firstAttribute="height" secondItem="gMf-4Y-xdS" secondAttribute="height" multiplier="0.277" id="IQM-vN-bGU"/>
-                            <constraint firstItem="a7E-dy-D5Q" firstAttribute="height" secondItem="gMf-4Y-xdS" secondAttribute="height" multiplier="0.059" id="NJX-tm-OEF"/>
+                            <constraint firstItem="a7E-dy-D5Q" firstAttribute="height" secondItem="gMf-4Y-xdS" secondAttribute="height" multiplier="0.065" id="NJX-tm-OEF"/>
+                            <constraint firstItem="a7E-dy-D5Q" firstAttribute="top" secondItem="OoZ-z3-dib" secondAttribute="bottom" id="OTm-qC-NFi"/>
+                            <constraint firstAttribute="trailing" secondItem="OoZ-z3-dib" secondAttribute="trailing" id="cCO-V5-wxv"/>
                             <constraint firstItem="66K-eb-NIa" firstAttribute="leading" secondItem="gMf-4Y-xdS" secondAttribute="leading" id="evc-vb-FSN"/>
                             <constraint firstItem="a7E-dy-D5Q" firstAttribute="leading" secondItem="gMf-4Y-xdS" secondAttribute="leading" id="h40-SQ-2Rx"/>
                             <constraint firstItem="bzR-Xp-6jv" firstAttribute="top" secondItem="a7E-dy-D5Q" secondAttribute="bottom" constant="5" id="nTa-MB-lne"/>
@@ -99,7 +107,8 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="bottomview" destination="a7E-dy-D5Q" id="Bsk-ve-grD"/>
+                        <outlet property="BottomView" destination="a7E-dy-D5Q" id="tci-aA-kV9"/>
+                        <outlet property="ParentView" destination="OoZ-z3-dib" id="xGl-xA-G6z"/>
                         <outlet property="bottomviewmargin" destination="nTa-MB-lne" id="Q6u-Oj-hyy"/>
                         <outlet property="input" destination="SEJ-NW-80E" id="87f-2c-V1r"/>
                         <outlet property="topview" destination="66K-eb-NIa" id="PYj-Gp-Gra"/>

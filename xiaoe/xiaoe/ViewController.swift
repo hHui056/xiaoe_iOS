@@ -345,6 +345,7 @@ class ViewController: BaseViewController {
         LightControlView.addSubview(backHome)
         emptyView.addSubview(LightControlView)
         self.view.addSubview(emptyView)
+        
     }
     // 移除灯光控制视图
     func dismissLightControl() {
@@ -413,7 +414,7 @@ extension ViewController:HeHuiDelegete{
         let instruction = InstructionParser().parseInstruction(content : message.bytes)
             if instruction == nil {
                 print("查询失败，请确认档位和跳线帽都正确再试")
-                showDialog(data: "查询失败,请确认档位和跳线帽都正确后再试")
+                showDialog(data: "操作失败,请确认档位和跳线帽都正确后再试")
                 return
             }
             let ResBody = instruction!.getBody()

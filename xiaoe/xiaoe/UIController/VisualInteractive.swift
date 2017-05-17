@@ -5,7 +5,7 @@
 //  Created by 何辉 on 2017/5/2.
 //  Copyright © 2017年 何辉. All rights reserved.
 //
-
+import Foundation
 import UIKit
 import ETILinkSDK
 import SVProgressHUD
@@ -17,16 +17,18 @@ class VisualInteractive: BaseViewController , ChatDataSource , UITextFieldDelega
     
     var tableView:TableView!
     
-    @IBOutlet weak var bottomview: UIView!
-   
+    @IBOutlet weak var BottomView: UIView!
+    
     @IBOutlet weak var bottomviewmargin: NSLayoutConstraint!
     
     @IBOutlet weak var input: UITextField!
     
     @IBOutlet weak var topview: UIView!
-
+    
+    @IBOutlet weak var ParentView: UIView!
+    
     var mainViewController : ViewController!
-   
+    
     var me:UserInfo!
     
     var you:UserInfo!
@@ -35,9 +37,9 @@ class VisualInteractive: BaseViewController , ChatDataSource , UITextFieldDelega
         chatToLed()
         self.input.resignFirstResponder()
         input.text = ""
-   
+        
     }
-  
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "可视交互"
@@ -46,13 +48,15 @@ class VisualInteractive: BaseViewController , ChatDataSource , UITextFieldDelega
         self.input.delegate = self
         NotificationCenter.default.addObserver(self,selector: #selector(keyboardWillChange(_:)),name: .UIKeyboardWillChangeFrame, object: nil)
         
+        Chats = NSMutableArray()
         mainViewController = self.navigationController!.viewControllers[0] as! ViewController //取得ViewContrallor实例（使用appManage对象）
         mainViewController.leddelegate = self
         setupChatTable()
+        
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-      
+        
     }
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         chatToLed()
@@ -79,7 +83,7 @@ class VisualInteractive: BaseViewController , ChatDataSource , UITextFieldDelega
     
     //点击任意位置键盘弹出
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.input.resignFirstResponder()        
+        self.input.resignFirstResponder()
     }
     
     
@@ -91,36 +95,30 @@ class VisualInteractive: BaseViewController , ChatDataSource , UITextFieldDelega
             let curve = userInfo[UIKeyboardAnimationCurveUserInfoKey] as? UInt {
             let frame = value.cgRectValue
             let intersection = frame.intersection(self.view.frame)
-            
             self.view.layoutIfNeeded()
             //改变下约束
             self.bottomviewmargin.constant = intersection.height + 5
-            print("键盘高度是: \(intersection.height)")
             UIView.animate(withDuration: duration, delay: 0.0,options: UIViewAnimationOptions(rawValue: curve), animations: {
-                            _ in
-                            self.view.layoutIfNeeded()
+                _ in
+                self.view.layoutIfNeeded()
             }, completion: nil)
         }
     }
     func setupChatTable()
     {
-        
-         self.tableView = TableView(frame:CGRect(x: 0, y: topview.frame.size.height, width: self.view.frame.size.width, height: self.view.frame.size.height - bottomview.frame.size.height - topview.frame.size.height), style: .plain)
+        self.view.bringSubview(toFront: BottomView) //将输入框移到最上层，避免被其他视图遮住
+        self.tableView = TableView(frame:CGRect(x: 0, y: 0, width: self.view.frame.size.width, height:self.ParentView.frame.height), style: .plain)
         //创建一个重用的单元格
         self.tableView!.register(TableViewCell.self, forCellReuseIdentifier: "ChatCell")
         me = UserInfo(name:"Xiaoming" ,logo:("头像_设备.png"))
         you  = UserInfo(name:"Xiaohua", logo:("头像_设备.png"))
+        //   let second =  MessageItem(image:UIImage(named:"sz.png")!,user:me, date:Date(timeIntervalSinceNow:-90000290), mtype:.mine)
+        let fouth =  MessageItem(body:"请先确定开发板处于1档位且跳线帽插入正确，再发送消息!",user:me, date:Date(timeIntervalSinceNow:0), mtype:.mine)
         
-      
-   //   let second =  MessageItem(image:UIImage(named:"sz.png")!,user:me, date:Date(timeIntervalSinceNow:-90000290), mtype:.mine)
-
-        
-        let fouth =  MessageItem(body:"免费领取开发板",user:me, date:Date(timeIntervalSinceNow:0), mtype:.mine)
-        Chats = NSMutableArray()
         Chats.add(fouth)
         self.tableView.chatDataSource = self
         self.tableView.reloadData()
-        self.view.addSubview(self.tableView)
+        self.ParentView.addSubview(self.tableView)
     }
     
     func rowsForChatTable(_ tableView:TableView) -> Int
@@ -130,6 +128,7 @@ class VisualInteractive: BaseViewController , ChatDataSource , UITextFieldDelega
     
     func chatTableView(_ tableView:TableView, dataForRow row:Int) -> MessageItem
     {
+        print("这是第\(row)")
         return Chats[row] as! MessageItem
     }
     //发送消息到LED屏显示
@@ -164,7 +163,7 @@ class VisualInteractive: BaseViewController , ChatDataSource , UITextFieldDelega
         let message = ETMessage(bytes : instruction!.toByteArray())
         
         
-       mainViewController.mAppManager.etManager.chatTo("Fc5wGsTuvumomVom5De2G4rEqLZHCb1iiC", message: message) { (error) in
+        mainViewController.mAppManager.etManager.chatTo("Fc5wGsTuvumomVom5De2G4rEqLZHCb1iiC", message: message) { (error) in
             guard error == nil else {
                 SVProgressHUD.showError(withStatus: "查询失败！")
                 return

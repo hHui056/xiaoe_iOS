@@ -140,7 +140,7 @@ class TableView:UITableView,UITableViewDelegate, UITableViewDataSource
     
     //返回自定义的 TableViewCell
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath)
-        -> UITableViewCell {        
+        -> UITableViewCell {
         // Header based on snapInterval
         if (indexPath.row == 0)
         {
@@ -151,6 +151,7 @@ class TableView:UITableView,UITableViewDelegate, UITableViewDataSource
             let data = section[indexPath.row] as! MessageItem
             
             hcell.setDate(data.date)
+            self.scrollToRow(at: indexPath, at: UITableViewScrollPosition.bottom, animated: true)
             return hcell
         }
         // Standard
