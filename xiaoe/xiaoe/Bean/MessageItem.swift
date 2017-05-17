@@ -17,6 +17,8 @@ class MessageItem {
     var view:UIView
     //边距
     var insets:UIEdgeInsets
+    //录音路径（如果没有则为nil）
+    dynamic var recordUrl : URL?
     
     //设置我的文本消息边距
     class func getTextInsetsMine() -> UIEdgeInsets {
@@ -74,6 +76,8 @@ class MessageItem {
         self.insets = insets
     }
     
+    
+    
     //构造图片消息体
     convenience init(image:UIImage, user:UserInfo,  date:Date, mtype:ChatType) {
         var size = image.size
@@ -82,8 +86,7 @@ class MessageItem {
             size.height /= (size.width / 220);
             size.width = 220;
         }
-        let imageView = UIImageView(frame:CGRect(x: 0, y: 0, width: size.width,
-                                                 height: size.height))
+        let imageView = UIImageView(frame:CGRect(x: 0, y: 0, width: size.width,height: size.height))
         imageView.image = image
         imageView.layer.cornerRadius = 5.0
         imageView.layer.masksToBounds = true
@@ -92,5 +95,28 @@ class MessageItem {
             MessageItem.getImageInsetsMine() : MessageItem.getImageInsetsSomeone())
         
         self.init(user:user,  date:date, mtype:mtype, view:imageView, insets:insets)
-    }    
+    }
+    
+    //构造语音消息体
+    convenience init(recordUrl:URL?, user:UserInfo,  date:Date, mtype:ChatType) {
+        
+        let image : UIImage = UIImage(named:("语音图标.png"))!
+        var size = image.size
+        //等比缩放
+        if (size.width > 220) {
+            size.height /= (size.width / 220);
+            size.width = 220;
+        }
+        let imageView = UIImageView(frame:CGRect(x: 0, y: 0, width: size.width,height: size.height))
+        imageView.image = image
+        imageView.layer.cornerRadius = 5.0
+        imageView.layer.masksToBounds = true
+        
+        let insets:UIEdgeInsets =  (mtype == ChatType.mine ?
+            MessageItem.getImageInsetsMine() : MessageItem.getImageInsetsSomeone())
+        
+        self.init(user:user,  date:date, mtype:mtype, view:imageView, insets:insets)
+        self.recordUrl = recordUrl
+
+    }
 }

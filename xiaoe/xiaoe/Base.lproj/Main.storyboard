@@ -45,15 +45,13 @@
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="首页背景" translatesAutoresizingMaskIntoConstraints="NO" id="uBs-Eh-kvN">
                                         <rect key="frame" x="0.0" y="0.0" width="414" height="204"/>
                                     </imageView>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="首页设备图标" translatesAutoresizingMaskIntoConstraints="NO" id="FUi-AK-cw3">
-                                        <rect key="frame" x="155.33333333333331" y="70.333333333333314" width="103.99999999999994" height="103.66666666666669"/>
-                                    </imageView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="设备离线" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ts5-ob-CUq">
-                                        <rect key="frame" x="178" y="182" width="58" height="17"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2hl-kY-KRN" userLabel="首页设备图标">
+                                        <rect key="frame" x="155.33333333333331" y="70.666666666666686" width="103.33333333333331" height="103.33333333333331"/>
+                                        <state key="normal" backgroundImage="首页设备图标"/>
+                                        <connections>
+                                            <action selector="bindDevice" destination="BYZ-38-t0r" eventType="touchUpInside" id="VU6-dF-AUF"/>
+                                        </connections>
+                                    </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Bvz-Q5-3An">
                                         <rect key="frame" x="320.66666666666674" y="20.000000000000004" width="85.333333333333314" height="36.333333333333343"/>
                                         <constraints>
@@ -67,21 +65,27 @@
                                             <action selector="toSettingWifi" destination="BYZ-38-t0r" eventType="touchUpInside" id="5MC-aH-jx9"/>
                                         </connections>
                                     </button>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="设备离线" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ts5-ob-CUq">
+                                        <rect key="frame" x="178" y="182" width="58" height="17"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                                 <constraints>
-                                    <constraint firstItem="FUi-AK-cw3" firstAttribute="width" secondItem="Nsd-fG-ai1" secondAttribute="width" multiplier="0.25" id="6Cv-Lp-hPg"/>
-                                    <constraint firstAttribute="bottom" secondItem="FUi-AK-cw3" secondAttribute="bottom" constant="30" id="Fgi-yw-R0i"/>
-                                    <constraint firstItem="FUi-AK-cw3" firstAttribute="height" secondItem="Nsd-fG-ai1" secondAttribute="width" multiplier="0.25" id="K3p-pJ-r2h"/>
+                                    <constraint firstItem="Ts5-ob-CUq" firstAttribute="centerX" secondItem="Nsd-fG-ai1" secondAttribute="centerX" id="2ty-Ua-s8y"/>
+                                    <constraint firstItem="2hl-kY-KRN" firstAttribute="height" secondItem="Nsd-fG-ai1" secondAttribute="width" multiplier="0.25" id="7pE-Qd-Smc"/>
                                     <constraint firstItem="uBs-Eh-kvN" firstAttribute="height" secondItem="Nsd-fG-ai1" secondAttribute="height" id="LYa-gX-pVQ"/>
                                     <constraint firstItem="uBs-Eh-kvN" firstAttribute="leading" secondItem="Nsd-fG-ai1" secondAttribute="leading" id="Nbe-Db-80c"/>
                                     <constraint firstAttribute="trailing" secondItem="Bvz-Q5-3An" secondAttribute="trailing" constant="8" id="OL3-sj-eef"/>
+                                    <constraint firstItem="2hl-kY-KRN" firstAttribute="centerX" secondItem="Nsd-fG-ai1" secondAttribute="centerX" id="ali-KD-typ"/>
                                     <constraint firstAttribute="trailing" secondItem="uBs-Eh-kvN" secondAttribute="trailing" id="dEh-HY-pq2"/>
                                     <constraint firstItem="Bvz-Q5-3An" firstAttribute="width" secondItem="Nsd-fG-ai1" secondAttribute="width" multiplier="0.205" id="dXI-kk-X6o"/>
-                                    <constraint firstItem="FUi-AK-cw3" firstAttribute="centerX" secondItem="Nsd-fG-ai1" secondAttribute="centerX" id="nTP-RX-BSg"/>
-                                    <constraint firstItem="Ts5-ob-CUq" firstAttribute="top" secondItem="FUi-AK-cw3" secondAttribute="bottom" constant="8" id="qME-Fb-Ydv"/>
+                                    <constraint firstItem="Ts5-ob-CUq" firstAttribute="top" secondItem="2hl-kY-KRN" secondAttribute="bottom" constant="8" id="elh-FD-sk6"/>
+                                    <constraint firstAttribute="bottom" secondItem="2hl-kY-KRN" secondAttribute="bottom" constant="30" id="ozb-Wx-Ado"/>
                                     <constraint firstItem="uBs-Eh-kvN" firstAttribute="top" secondItem="Nsd-fG-ai1" secondAttribute="top" id="qQq-gb-gd1"/>
                                     <constraint firstItem="Bvz-Q5-3An" firstAttribute="top" secondItem="Nsd-fG-ai1" secondAttribute="top" constant="20" id="sFj-0Y-IcW"/>
-                                    <constraint firstItem="Ts5-ob-CUq" firstAttribute="centerX" secondItem="Nsd-fG-ai1" secondAttribute="centerX" id="yRz-e1-f2o"/>
+                                    <constraint firstItem="2hl-kY-KRN" firstAttribute="width" secondItem="Nsd-fG-ai1" secondAttribute="width" multiplier="0.25" id="zC5-cH-YBI"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HGW-O0-vtO" userLabel="功能模块">
@@ -787,7 +791,6 @@
                     </view>
                     <navigationItem key="navigationItem" id="cxv-I8-Nue"/>
                     <connections>
-                        <outlet property="bangdingshebei" destination="FUi-AK-cw3" id="AV5-jb-lEc"/>
                         <outlet property="daqiya" destination="FOW-cH-xlC" id="pSN-dg-XT5"/>
                         <outlet property="deviceStatus" destination="Ts5-ob-CUq" id="h4r-oI-VS9"/>
                         <outlet property="duocaidengguang" destination="kMf-KY-Hfc" id="shY-dR-uco"/>

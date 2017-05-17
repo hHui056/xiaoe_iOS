@@ -95,6 +95,8 @@ class ViewController: BaseViewController {
         
         self.navigationController?.pushViewController(anotherView, animated:true)
     }
+    
+    
     // - 前往二维码扫描绑定设备界面
     @IBAction func bindDevice() {
         let  scanner = ScannerViewController()
@@ -102,7 +104,7 @@ class ViewController: BaseViewController {
         scanner.delegate = self
         self.navigationController?.pushViewController(scanner, animated: true)
     }
-    @IBOutlet weak var bangdingshebei: UIImageView!
+
     //设备状态
     @IBOutlet weak var deviceStatus: UILabel!
     

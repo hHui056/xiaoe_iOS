@@ -7,73 +7,126 @@
 //
 
 import UIKit
+import Speech
 
-class VoiceControl: BaseViewController , IFlyRecognizerViewDelegate {
+class VoiceControl: BaseViewController  , SFSpeechRecognizerDelegate {
     let TAG = "VoiceControl"
     
-    // - 测试appid最多访问500次语音服务
-    let APPID = "appid=5912a568"
-    
-    var iflyRecognizerView:IFlyRecognizerView!
-    
     var resultText = ""
+
+    let speechRecognizer = SFSpeechRecognizer(locale: Locale.init(identifier: "zh-cn"))
     
-    var isRecongnizer = false
+    private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
     
-    @IBAction func start() {
-        
-       iflyRecognizerView.start()
-    }
+    private var recognitionTask: SFSpeechRecognitionTask?
     
-    
-    @IBAction func stop() {
-        iflyRecognizerView.cancel()
-    }
-    
+    private let audioEngine = AVAudioEngine()
     
     @IBOutlet weak var result: UILabel!
     
+   
+    @IBOutlet weak var microphoneButton: UIButton!
+    
+    
+    @IBAction func microphoneTapped(_ sender: Any) {
+        if audioEngine.isRunning {
+            audioEngine.stop()
+            recognitionRequest?.endAudio()
+           // microphoneButton.isEnabled = false
+            microphoneButton.setTitle("Start Recording", for: .normal)
+        } else {
+            startRecording()
+            microphoneButton.setTitle("Stop Recording", for: .normal)
+        }
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "语音控制"
         // Do any additional setup after loading the view.
-        
-        IFlySpeechUtility.createUtility(APPID)
-     
-        
-        self.iflyRecognizerView = IFlyRecognizerView.init(center: self.view.center)as IFlyRecognizerView
-        self.iflyRecognizerView.delegate = self
-        self.iflyRecognizerView.setParameter("iat", forKey: IFlySpeechConstant.ifly_DOMAIN())
-        self.iflyRecognizerView.setParameter("16000", forKey: IFlySpeechConstant.sample_RATE())
-        // | result_type   | 返回结果的数据格式 plain,只支持plain
-        self.iflyRecognizerView.setParameter("plain", forKey: IFlySpeechConstant.result_TYPE())
+        SFSpeechRecognizer.requestAuthorization { (authStatus) in  //4
+            var isButtonEnabled = false
+            switch authStatus {  //5
+            case .authorized:
+                isButtonEnabled = true
+            case .denied:
+                isButtonEnabled = false
+                print("User denied access to speech recognition")
+            case .restricted:
+                isButtonEnabled = false
+                print("Speech recognition restricted on this device")
+            case .notDetermined:
+                isButtonEnabled = false
+                print("Speech recognition not yet authorized")
+            }
+            OperationQueue.main.addOperation() {
+                self.microphoneButton.isEnabled = isButtonEnabled
+            }
+        }
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    // - 语音识别结果
-    func onResult(_ resultArray: [Any]!, isLast: Bool) {
-        
-        var resultStr : String = ""
-        if resultArray != nil {
-            let resultDic : Dictionary<String, String> = resultArray[0] as! Dictionary<String, String>
-            
-            for key in resultDic.keys {
-                resultStr += key
-                showPrint(resultStr)
-            }
-        }
-        resultText += resultStr
-        result.text = resultText
-    }
-    // - 语音识别出错
-    func onError(_ error: IFlySpeechError!) {
-        showPrint("error is \(error)")
+
     }
     
     func showPrint(_ data:String){
         print("\(TAG) \(data)\n")
+    }
+    
+    // - 使用speech framework实现语音转文字
+    func startRecording() {
+        if recognitionTask != nil {
+            recognitionTask?.cancel()
+            recognitionTask = nil
+        }
+        let audioSession = AVAudioSession.sharedInstance()
+        do {
+            try audioSession.setCategory(AVAudioSessionCategoryRecord)
+            try audioSession.setMode(AVAudioSessionModeMeasurement)
+            try audioSession.setActive(true, with: .notifyOthersOnDeactivation)
+        } catch {
+            print("audioSession properties weren't set because of an error.")
+        }
+        recognitionRequest = SFSpeechAudioBufferRecognitionRequest()
+        guard let inputNode = audioEngine.inputNode else {
+            fatalError("Audio engine has no input node")
+        }
+       guard let recognitionRequest = recognitionRequest else {
+            fatalError("Unable to create an SFSpeechAudioBufferRecognitionRequest object")
+        }
+        recognitionRequest.shouldReportPartialResults = true
+        recognitionTask = speechRecognizer?.recognitionTask(with: recognitionRequest, resultHandler: { (result, error) in
+            var isFinal = false
+            if result != nil {
+                self.result.text = result?.bestTranscription.formattedString
+                isFinal = (result?.isFinal)!
+            }
+            if error != nil || isFinal {
+                self.audioEngine.stop()
+                inputNode.removeTap(onBus: 0)
+                self.recognitionRequest = nil
+                self.recognitionTask = nil
+               // self.microphoneButton.isEnabled = true
+            }
+        })
+        let recordingFormat = inputNode.outputFormat(forBus: 0)
+        inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { (buffer, when) in
+            self.recognitionRequest?.append(buffer)
+        }
+        audioEngine.prepare()
+        do {
+            try audioEngine.start()
+        } catch {
+            print("audioEngine couldn't start because of an error.")
+        }
+        result.text = "Say something, I'm listening!"
+    }
+    
+    func speechRecognizer(_ speechRecognizer: SFSpeechRecognizer, availabilityDidChange available: Bool) {
+        if available {
+            microphoneButton.isEnabled = true
+        } else {
+            microphoneButton.isEnabled = false
+        }
     }
 }

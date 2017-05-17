@@ -11,10 +11,12 @@ class TableView:UITableView,UITableViewDelegate, UITableViewDataSource
 {
     //用于保存所有消息
     var bubbleSection:NSMutableArray!
+    
     //数据源，用于与 ViewController 交换数据
     var chatDataSource:ChatDataSource!
     
     var  snapInterval:TimeInterval!
+    
     var  typingBubble:ChatBubbleTypingType!
     
     required init?(coder aDecoder: NSCoder) {
@@ -118,7 +120,7 @@ class TableView:UITableView,UITableViewDelegate, UITableViewDataSource
             return 1
         }
         
-        return (self.bubbleSection[section] as AnyObject).count+1
+        return (self.bubbleSection[section] as AnyObject).count + 1
     }
     
     //用于确定单元格的高度，如果此方法实现得不对，单元格与单元格之间会错位
@@ -133,9 +135,18 @@ class TableView:UITableView,UITableViewDelegate, UITableViewDataSource
         let data = section[indexPath.row - 1]
         
         let item =  data as! MessageItem
-        let height  =  max(item.insets.top + item.view.frame.size.height  + item.insets.bottom, 52) + 17
-        print("height:\(height)")
+        let height  =  max(item.insets.top + item.view.frame.size.height  + item.insets.bottom, 52) + 10
         return height
+    }
+    //  - 每一项的选中事件
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print("聊天信息选中的是第 \(indexPath.row) 项")
+        let section  =  self.bubbleSection[indexPath.section] as! NSMutableArray
+        let data = section[indexPath.row - 1] as! MessageItem
+     //   let message : MessageItem = bubbleSection[indexPath.row] as! MessageItem
+        if data.recordUrl != nil { //此处播放语音消息
+            print("点击的是一条语音消息")
+        }
     }
     
     //返回自定义的 TableViewCell
@@ -164,4 +175,5 @@ class TableView:UITableView,UITableViewDelegate, UITableViewDataSource
         
         return cell
     }
+    
 }

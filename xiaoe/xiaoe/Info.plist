@@ -24,23 +24,25 @@
 	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
-    <key>NSCameraUsageDescription</key>
-    <string>camera</string>
-    <key>NSPhotoLibraryUsageDescription</key>
-    <string>photo</string>
-    <key>NSAppTransportSecurity</key>
-    <dict>
-        <key>NSAllowsArbitraryLoads</key>
-        <true/>
-    </dict>
-    <key>NSMicrophoneUsageDescription</key>
-    <string>mic</string>
-    <key>NSLocationUsageDescription</key>
-    <string>locusa</string>
-    <key>NSLocationAlwaysUsageDescription</key>
-    <string>localw</string>
-    <key>NSContactsUsageDescription</key>
-    <string>conta</string>
+	<key>NSCameraUsageDescription</key>
+	<string>camera</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>photo</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>mic</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>需要访问你的麦克风</string>
+	<key>NSLocationUsageDescription</key>
+	<string>locusa</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>localw</string>
+	<key>NSContactsUsageDescription</key>
+	<string>conta</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
 	<key>UIRequiredDeviceCapabilities</key>

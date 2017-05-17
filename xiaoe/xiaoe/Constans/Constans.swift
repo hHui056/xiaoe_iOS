@@ -37,6 +37,8 @@ let GROUPNAME_KEY = "group_name_key"
 let ADD_GROUP_MEMBER_ICON = "addgroupmember"
 let FIRST_BIND_DEVICE = "first_bind_device"
 let ADD_DEVICE = "add_device"
+let DEFEAT_RECORD_URL = "defeat_record_url"
+
 // --------------------扫描成功界面------------------------
 let SURE_BIND_DEVICE = "重新绑定"
 let SURE_ADD_DEVICE = "确定添加"

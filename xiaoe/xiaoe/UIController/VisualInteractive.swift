@@ -184,7 +184,7 @@ class VisualInteractive: BaseViewController , ChatDataSource , UITextFieldDelega
         }
         return true
     }
-    
+
 }
 
 
