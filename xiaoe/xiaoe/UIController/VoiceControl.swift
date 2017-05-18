@@ -8,11 +8,13 @@
 
 import UIKit
 import Speech
+import SVProgressHUD
+import AVFoundation
+import ETILinkSDK
 
-class VoiceControl: BaseViewController  , SFSpeechRecognizerDelegate {
-    let TAG = "VoiceControl"
+class VoiceControl: BaseViewController  , SFSpeechRecognizerDelegate , ChatDataSource , LEDReceiveDelegete{
     
-    var resultText = ""
+    let TAG = "VoiceControl"
 
     let speechRecognizer = SFSpeechRecognizer(locale: Locale.init(identifier: "zh-cn"))
     
@@ -22,28 +24,71 @@ class VoiceControl: BaseViewController  , SFSpeechRecognizerDelegate {
     
     private let audioEngine = AVAudioEngine()
     
-    @IBOutlet weak var result: UILabel!
+    var audioRecorder:AVAudioRecorder! //录音类
     
-   
+    var audioPlayer:AVAudioPlayer! //用于播放录音
+    
+    var mainViewController : ViewController!
+    
+    var SoundURL : URL?   //用来临时存储录音路径URL
+    
+    
+    ////定义音频的编码参数，这部分比较重要，决定录制音频文件的格式、音质、容量大小等，建议采用AAC的编码方式
+    let recordSettings = [AVSampleRateKey : NSNumber(value: Float(44100.0) as Float),//声音采样率
+        AVFormatIDKey : NSNumber(value: Int32(kAudioFormatMPEG4AAC) as Int32),//编码格式
+        AVNumberOfChannelsKey : NSNumber(value: 1 as Int32),//采集音轨
+        AVEncoderAudioQualityKey : NSNumber(value: Int32(AVAudioQuality.medium.rawValue) as Int32)]//音频质量
+    
+    var tableView:TableView!
+    
+    var Chats:NSMutableArray!
+    
+    var me:UserInfo!
+    
+    var you:UserInfo!
+    
+    var ListenResult = "" //语音识别结果
+    
+    let defaults = UserDefaults.standard
+    
+    var DeviceUid = "" //设备ID
+    
     @IBOutlet weak var microphoneButton: UIButton!
-    
+   
+    @IBOutlet weak var ParentView: UIView!
     
     @IBAction func microphoneTapped(_ sender: Any) {
-        if audioEngine.isRunning {
+        if audioEngine.isRunning { // 停止识别(停止录音-->更新回话列表)----->如果含有“温度”||“湿度”||“大气”，则发送查询指令到设备,没有以上字符，则显示不能识别指令。
+            SVProgressHUD.dismiss()
             audioEngine.stop()
             recognitionRequest?.endAudio()
-           // microphoneButton.isEnabled = false
-            microphoneButton.setTitle("Start Recording", for: .normal)
+            microphoneButton.setTitle("点 击 说 话", for: .normal)
+            // - 停止录音
+            StopLuYin()
+            PlaySound(url: SoundURL!)
+            // - 新增一项到对话列表----->更新视图
+            let Sound =  MessageItem(recordUrl:SoundURL,user:me, date:Date(timeIntervalSinceNow:0), mtype:.mine)
+            Chats.add(Sound)
+            tableView.reloadData()
+            // - 处理语音识别结果
+            DisPoseListenResult()
+            
         } else {
-            startRecording()
-            microphoneButton.setTitle("Stop Recording", for: .normal)
+            SVProgressHUD.show(withStatus: "识别中...")
+            startRecording()   //开始语音识别
+            LuYin()   //开始录音
+            microphoneButton.setTitle("点 击 结 束", for: .normal)
         }
     }
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "语音控制"
+        
+        DeviceUid = defaults.string(forKey: DEVICE_ID_KEY)!
+        ViewController.isResponse = false //此处设置主页不需要响应收到的消息(全部由此页面处理)
+        Chats = NSMutableArray()
         // Do any additional setup after loading the view.
-        SFSpeechRecognizer.requestAuthorization { (authStatus) in  //4
+        SFSpeechRecognizer.requestAuthorization { (authStatus) in  //
             var isButtonEnabled = false
             switch authStatus {  //5
             case .authorized:
@@ -62,6 +107,10 @@ class VoiceControl: BaseViewController  , SFSpeechRecognizerDelegate {
                 self.microphoneButton.isEnabled = isButtonEnabled
             }
         }
+        
+        mainViewController = self.navigationController!.viewControllers[0] as! ViewController //取得ViewContrallor实例（使用appManage对象）
+        mainViewController.leddelegate = self
+        setupChatTable()
     }
 
     override func didReceiveMemoryWarning() {
@@ -98,8 +147,9 @@ class VoiceControl: BaseViewController  , SFSpeechRecognizerDelegate {
         recognitionTask = speechRecognizer?.recognitionTask(with: recognitionRequest, resultHandler: { (result, error) in
             var isFinal = false
             if result != nil {
-                self.result.text = result?.bestTranscription.formattedString
+                self.ListenResult = (result?.bestTranscription.formattedString)!
                 isFinal = (result?.isFinal)!
+                self.showPrint("识别的结果是:  \(self.ListenResult)")
             }
             if error != nil || isFinal {
                 self.audioEngine.stop()
@@ -119,7 +169,7 @@ class VoiceControl: BaseViewController  , SFSpeechRecognizerDelegate {
         } catch {
             print("audioEngine couldn't start because of an error.")
         }
-        result.text = "Say something, I'm listening!"
+        
     }
     
     func speechRecognizer(_ speechRecognizer: SFSpeechRecognizer, availabilityDidChange available: Bool) {
@@ -127,6 +177,151 @@ class VoiceControl: BaseViewController  , SFSpeechRecognizerDelegate {
             microphoneButton.isEnabled = true
         } else {
             microphoneButton.isEnabled = false
+        }
+    }
+    
+    func setupChatTable()
+    {
+        self.view.bringSubview(toFront: microphoneButton) //将发送button移到最上层，避免被其他视图遮住
+        self.tableView = TableView(frame:CGRect(x: 0, y: 0, width: self.view.frame.size.width, height:self.ParentView.frame.height), style: .plain)
+        //创建一个重用的单元格
+        self.tableView!.register(TableViewCell.self, forCellReuseIdentifier: "ChatCell")
+        me = UserInfo(name:"Xiaoming" ,logo:("头像_设备.png"))
+        you  = UserInfo(name:"Xiaohua", logo:("头像_设备.png"))
+        let fouth =  MessageItem(body:"语音控制目前只支持温湿度和大气压查询！",user:me, date:Date(timeIntervalSinceNow:0), mtype:.mine)
+        
+        Chats.add(fouth)
+        self.tableView.chatDataSource = self
+        self.tableView.reloadData()
+        self.ParentView.addSubview(self.tableView)
+    }
+
+    func rowsForChatTable(_ tableView:TableView) -> Int
+    {
+        return self.Chats.count
+    }
+    
+    func chatTableView(_ tableView:TableView, dataForRow row:Int) -> MessageItem
+    {
+        return Chats[row] as! MessageItem
+    }
+    // - 构建录音保存URL
+    func directoryURL() -> URL? {
+        //定义并构建一个url来保存音频，音频文件名为ddMMyyyyHHmmss.caf
+        //根据时间来设置存储文件名
+        let currentDateTime = Date()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "ddMMyyyyHHmmss"
+        let recordingName = formatter.string(from: currentDateTime)+".caf"
+        print(recordingName)
+        
+        let fileManager = FileManager.default
+        let urls = fileManager.urls(for: .documentDirectory, in: .userDomainMask)
+        let documentDirectory = urls[0] as URL
+        let soundURL = documentDirectory.appendingPathComponent(recordingName)
+        self.SoundURL = soundURL
+        return soundURL
+    }
+    // - 开始录音
+    func LuYin(){
+        let audioSession = AVAudioSession.sharedInstance()
+        do {
+            try audioSession.setCategory(AVAudioSessionCategoryPlayAndRecord)
+            try audioRecorder = AVAudioRecorder(url: self.directoryURL()!,settings: recordSettings)//初始化实例
+            audioRecorder.prepareToRecord()//准备录音
+        } catch {
+            
+        }
+        if !audioRecorder.isRecording {
+            let audioSession = AVAudioSession.sharedInstance()
+            do {
+                try audioSession.setActive(true)
+                audioRecorder.record()
+            } catch {
+            }
+        }
+    }
+    //停止录音
+    func StopLuYin(){
+        audioRecorder.stop()
+        let audioSession = AVAudioSession.sharedInstance()
+        do {
+            try audioSession.setActive(false)
+        } catch {
+        }
+    }
+    
+    // - 处理识别过后的文字  能识别成指令则发送，否则给出对应提示
+    
+    func DisPoseListenResult(){
+        if ListenResult.contains("温") || ListenResult.contains("湿"){ // 查询温湿度
+            sendTempOrAirReq(isTemp: true)
+        }else if ListenResult.contains("气压") || ListenResult.contains("大气") { //查询大气压
+            sendTempOrAirReq(isTemp: false)
+            
+        }else{//指令无法识别
+            let item =  MessageItem(body:"指令无法识别",user:you, date:Date(timeIntervalSinceNow:0), mtype:.someone)
+            Chats.add(item)
+            tableView.reloadData()
+        }
+    }
+    //收到led控制反馈--->此处不处理
+    func onLEDReceive(body: LEDControllerResBody) {
+        
+    }
+    //收到查询反馈指令
+    func onQueryReceive(body: Body) {
+        if body is TemperatureAndHumidityResBody { //温湿度查询回复
+            let tempbody = body as! TemperatureAndHumidityResBody
+            let showstr = "温度 (℃)  \(tempbody.tempeInt).\(tempbody.tempeDec)℃\n\n湿度 (RH) \(tempbody.humInt).\(tempbody.hunDec)%"
+            let item = MessageItem(body:showstr as NSString,user:you, date:Date(timeIntervalSinceNow:0), mtype:.someone)
+            Chats.add(item)
+            tableView.reloadData()
+        }else{//大气压查询回复
+            let airbody = body as! AirResBody
+            let showstr = "大气压 (Pa) \(airbody.air) \n\n海拔 (m) \(airbody.high)"
+            let item = MessageItem(body:showstr as NSString,user:you, date:Date(timeIntervalSinceNow:0), mtype:.someone)
+            Chats.add(item)
+            tableView.reloadData()
+        }
+    }
+    // - 发送温湿度或者大气压查询指令
+    // - isTemp = true    查询温湿度
+    // - isTemp = false   查询大气压
+    
+    func sendTempOrAirReq(isTemp:Bool){
+        
+        var instruction : Instruction?
+        
+        if isTemp {
+             instruction = Instruction.Builder().setCmd(cmd: Instruction.Cmd.QUERY).setBody(body: TemperatureAndHumidityReqBody(data1:Instruction.RequestType.BOTH)).createInstruction()
+        }else{
+             instruction = Instruction.Builder().setCmd(cmd: Instruction.Cmd.QUERY).setBody(body: AirReqBody(data1:Instruction.RequestType.AIR)).createInstruction()
+        }
+       
+       let message = ETMessage(bytes : instruction!.toByteArray())
+        
+       mainViewController.mAppManager.etManager.chatTo(DeviceUid, message: message) { (error) in
+            guard error == nil else {
+                
+                let item =  MessageItem(body:"查询出错",user:self.you, date:Date(timeIntervalSinceNow:0), mtype:.someone)
+                self.Chats.add(item)
+                self.tableView.reloadData()
+                
+                return
+            }
+            print("chatto [\(self.DeviceUid)], content: \(message) ")
+        }
+    }
+    
+    //播放此条录音
+    func PlaySound(url:URL){
+        do {
+            try audioPlayer = AVAudioPlayer(contentsOf: url)
+            
+             audioPlayer.play()
+            
+        } catch {
         }
     }
 }

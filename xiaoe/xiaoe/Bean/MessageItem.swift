@@ -100,7 +100,7 @@ class MessageItem {
     //构造语音消息体
     convenience init(recordUrl:URL?, user:UserInfo,  date:Date, mtype:ChatType) {
         
-        let image : UIImage = UIImage(named:("语音图标.png"))!
+        let image : UIImage = UIImage(named:("语音.png"))!
         var size = image.size
         //等比缩放
         if (size.width > 220) {

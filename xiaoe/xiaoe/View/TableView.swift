@@ -1,5 +1,5 @@
 import UIKit
-
+import AVFoundation
 enum ChatBubbleTypingType
 {
     case nobody
@@ -18,6 +18,8 @@ class TableView:UITableView,UITableViewDelegate, UITableViewDataSource
     var  snapInterval:TimeInterval!
     
     var  typingBubble:ChatBubbleTypingType!
+    
+    var audioPlayer:AVAudioPlayer! //用于播放录音
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -145,7 +147,8 @@ class TableView:UITableView,UITableViewDelegate, UITableViewDataSource
         let data = section[indexPath.row - 1] as! MessageItem
      //   let message : MessageItem = bubbleSection[indexPath.row] as! MessageItem
         if data.recordUrl != nil { //此处播放语音消息
-            print("点击的是一条语音消息")
+            PlaySound(url: data.recordUrl!)
+            print("语音地址是： \(data.recordUrl!)")
         }
     }
     
@@ -174,6 +177,16 @@ class TableView:UITableView,UITableViewDelegate, UITableViewDataSource
         let cell =  TableViewCell(data:data as! MessageItem, reuseIdentifier:cellId)
         
         return cell
+    }
+    //播放此条录音
+    func PlaySound(url:URL){
+        do {
+            try audioPlayer = AVAudioPlayer(contentsOf: url)
+            
+            audioPlayer.play()
+            
+        } catch {
+        }
     }
     
 }

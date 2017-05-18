@@ -26,7 +26,9 @@ class ViewController: BaseViewController {
     
      var DeviceUid = ""
     
-     public static  var isFirstUse = false
+     public static  var isFirstUse = false //是否第一次使用app
+    
+     public static  var isResponse = true  //此页面是否需要处理onmessage收到的消息
     
      var leddelegate : LEDReceiveDelegete?
     
@@ -71,6 +73,7 @@ class ViewController: BaseViewController {
             if isConnectedServer {
                 self.getDeviceState()
             }
+        ViewController.isResponse = true //显示是设置需要处理收到的消息
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -228,6 +231,9 @@ class ViewController: BaseViewController {
         jumpToOtherStoryboard(name: "GroupManager", id: "groupmanager")
     }
     func showDialog(data:String){
+        if !ViewController.isResponse { //此页面不需要响应----->其他页面处理
+            return
+        }
         let alertController:UIAlertController = UIAlertController(title: nil, message: data, preferredStyle:  UIAlertControllerStyle.alert)
         let maction = UIAlertAction(title: "确   认", style: UIAlertActionStyle.default, handler: {(alertAction)-> Void in
             
@@ -423,10 +429,12 @@ extension ViewController:HeHuiDelegete{
             if ResBody is TemperatureAndHumidityResBody {//温湿度查询反馈
                 let tempbody = ResBody as! TemperatureAndHumidityResBody
                 let showstr = "温度 (℃)  \(tempbody.tempeInt).\(tempbody.tempeDec)℃\n\n湿度 (RH) \(tempbody.humInt).\(tempbody.hunDec)%"
+                self.leddelegate?.onQueryReceive(body: tempbody)
                 showDialog(data: showstr)
             }else if ResBody is AirResBody {//大气压查询反馈
                 let airbody = ResBody as! AirResBody
                 let showstr = "大气压 (Pa) \(airbody.air) \n\n海拔 (m) \(airbody.high)"
+                self.leddelegate?.onQueryReceive(body: airbody)
                 showDialog(data: showstr)
             }else if ResBody is RGBControllerResBody {//RGB灯光控制反馈
                 let rgbbody = ResBody as! RGBControllerResBody
@@ -532,4 +540,5 @@ extension ViewController:MessageDelegete,ChartViewDelegate{
 
 protocol LEDReceiveDelegete {
     func onLEDReceive(body:LEDControllerResBody)
+    func onQueryReceive(body:Body)
 }

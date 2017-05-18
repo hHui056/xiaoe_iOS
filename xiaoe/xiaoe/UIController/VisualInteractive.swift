@@ -33,6 +33,10 @@ class VisualInteractive: BaseViewController , ChatDataSource , UITextFieldDelega
     
     var you:UserInfo!
     
+    let defaults = UserDefaults.standard
+    
+    var DeviceUid = "" //设备ID
+    
     @IBAction func sendMessage() {
         chatToLed()
         self.input.resignFirstResponder()
@@ -44,6 +48,7 @@ class VisualInteractive: BaseViewController , ChatDataSource , UITextFieldDelega
         super.viewDidLoad()
         self.title = "可视交互"
         
+        DeviceUid = defaults.string(forKey: DEVICE_ID_KEY)!
         input.returnKeyType = UIReturnKeyType.send
         self.input.delegate = self
         NotificationCenter.default.addObserver(self,selector: #selector(keyboardWillChange(_:)),name: .UIKeyboardWillChangeFrame, object: nil)
@@ -80,7 +85,11 @@ class VisualInteractive: BaseViewController , ChatDataSource , UITextFieldDelega
             self.tableView.reloadData()
         }
     }
-    
+    //收到查询信息--->不处理
+    func onQueryReceive(body: Body) {
+        
+        
+    }
     //点击任意位置键盘弹出
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.input.resignFirstResponder()
@@ -163,7 +172,7 @@ class VisualInteractive: BaseViewController , ChatDataSource , UITextFieldDelega
         let message = ETMessage(bytes : instruction!.toByteArray())
         
         
-        mainViewController.mAppManager.etManager.chatTo("Fc5wGsTuvumomVom5De2G4rEqLZHCb1iiC", message: message) { (error) in
+        mainViewController.mAppManager.etManager.chatTo(self.DeviceUid, message: message) { (error) in
             guard error == nil else {
                 SVProgressHUD.showError(withStatus: "查询失败！")
                 return
