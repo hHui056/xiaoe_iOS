@@ -116,7 +116,7 @@ class VisualInteractive: BaseViewController , ChatDataSource , UITextFieldDelega
     func setupChatTable()
     {
         self.view.bringSubview(toFront: BottomView) //将输入框移到最上层，避免被其他视图遮住
-        self.tableView = TableView(frame:CGRect(x: 0, y: 0, width: self.view.frame.size.width, height:self.ParentView.frame.height), style: .plain)
+        self.tableView = TableView(frame:CGRect(x: 0, y: 0, width: self.view.frame.size.width, height:self.ParentView.frame.height - BottomView.frame.height - 10), style: .plain)
         //创建一个重用的单元格
         self.tableView!.register(TableViewCell.self, forCellReuseIdentifier: "ChatCell")
         me = UserInfo(name:"Xiaoming" ,logo:("头像_设备.png"))

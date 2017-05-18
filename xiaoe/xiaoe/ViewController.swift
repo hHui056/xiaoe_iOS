@@ -141,10 +141,7 @@ class ViewController: BaseViewController {
     }
     //查询温湿度
     func querytemperature(){
-        if !isDeviceOnline {
-            SVProgressHUD.showError(withStatus: "开发板不在线")
-            return
-        }
+        CheckDeviceIsOnline()
         SVProgressHUD.show(withStatus: "查询中...")
         let instruction = Instruction.Builder().setCmd(cmd: Instruction.Cmd.QUERY).setBody(body: TemperatureAndHumidityReqBody(data1:Instruction.RequestType.BOTH)).createInstruction()
         
@@ -170,18 +167,13 @@ class ViewController: BaseViewController {
     }
     //多彩灯光
     func contralLight(){
-        if !isDeviceOnline {
-            SVProgressHUD.showError(withStatus: "开发板不在线")
-            return
-        }
+        CheckDeviceIsOnline()
+        
         showControlLightDialog()
     }
     //查询大气压
     func queryatmos(){
-        if !isDeviceOnline {
-            SVProgressHUD.showError(withStatus: "开发板不在线")
-            return
-        }
+        CheckDeviceIsOnline()
         SVProgressHUD.show(withStatus: "查询中...")
         
         let instruction = Instruction.Builder().setCmd(cmd: Instruction.Cmd.QUERY).setBody(body: AirReqBody(data1:Instruction.RequestType.AIR)).createInstruction()
@@ -207,27 +199,32 @@ class ViewController: BaseViewController {
     }
     //跳转到可视交互
     func goKeShiJiaoHu(){
-        if !isDeviceOnline {
-            SVProgressHUD.showError(withStatus: "开发板不在线")
-            return
-        }
+         CheckDeviceIsOnline()
          jumpToOtherStoryboard(name: "VisualInteractive", id: "keshijiaohu")
     }
     //跳转到语音控制
     func goYuYinKongZhi(){
-        if !isDeviceOnline {
-            SVProgressHUD.showError(withStatus: "开发板不在线")
-            return
-        }
+        CheckDeviceIsOnline()
+        let storyboard = UIStoryboard(name: "VoiceControl", bundle: nil)
         
-         jumpToOtherStoryboard(name: "VoiceControl", id: "Voicecontrol")
+        let voice = (storyboard.instantiateViewController(withIdentifier:"Voicecontrol")) as! VoiceControl
+        voice.WhoAmI = VOICE_CONTROL
+        self.navigationController?.pushViewController(voice, animated:true)
+        
+        
     }
     //跳转到语音留言
     func goYuYinLiuYan(){
-        showToast(title: "语音留言")
+        CheckDeviceIsOnline()
+        let storyboard = UIStoryboard(name: "VoiceControl", bundle: nil)
+        
+        let voice = (storyboard.instantiateViewController(withIdentifier:"Voicecontrol")) as! VoiceControl
+        voice.WhoAmI = LEAVE_MESSAGE
+        self.navigationController?.pushViewController(voice, animated:true)
     }
     //跳转到群组管理
     func goQunZuGuanLi(){
+        
         jumpToOtherStoryboard(name: "GroupManager", id: "groupmanager")
     }
     func showDialog(data:String){
@@ -411,6 +408,14 @@ class ViewController: BaseViewController {
         piechart.legend.enabled = false // 不显示下方说明
         piechart.data = data
         
+        
+    }
+    // - 检查开发板是否在线
+    func CheckDeviceIsOnline(){
+        if !isDeviceOnline {
+            SVProgressHUD.showError(withStatus: "设备不在线")
+            return
+        }
         
     }
 }

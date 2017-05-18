@@ -38,6 +38,8 @@ let ADD_GROUP_MEMBER_ICON = "addgroupmember"
 let FIRST_BIND_DEVICE = "first_bind_device"
 let ADD_DEVICE = "add_device"
 let DEFEAT_RECORD_URL = "defeat_record_url"
+let VOICE_CONTROL = "voice_control"  //语音控制
+let LEAVE_MESSAGE = "leave_message"  //语音留言
 
 // --------------------扫描成功界面------------------------
 let SURE_BIND_DEVICE = "重新绑定"

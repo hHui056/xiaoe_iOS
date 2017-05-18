@@ -35,7 +35,7 @@
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="语音留言" translatesAutoresizingMaskIntoConstraints="NO" id="cbd-49-1OP" userLabel="wifi logo">
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="语音控制" translatesAutoresizingMaskIntoConstraints="NO" id="cbd-49-1OP" userLabel="wifi logo">
                                         <rect key="frame" x="158" y="80" width="60" height="60"/>
                                     </imageView>
                                 </subviews>
@@ -87,6 +87,8 @@
                     </view>
                     <connections>
                         <outlet property="ParentView" destination="8iA-cb-cSl" id="sPF-mA-4iI"/>
+                        <outlet property="foundationimg" destination="cbd-49-1OP" id="CU0-s6-1Nt"/>
+                        <outlet property="foundtiontxt" destination="wMO-g3-QEl" id="GBB-54-ZlM"/>
                         <outlet property="microphoneButton" destination="Lv9-dm-lfa" id="NrQ-5C-hPt"/>
                     </connections>
                 </viewController>
@@ -97,6 +99,6 @@
     </scenes>
     <resources>
         <image name="发送语音_bg" width="509" height="60"/>
-        <image name="语音留言" width="68" height="68"/>
+        <image name="语音控制" width="68" height="68"/>
     </resources>
 </document>

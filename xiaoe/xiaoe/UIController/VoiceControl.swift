@@ -5,10 +5,9 @@
 //  Created by 何辉 on 2017/5/10.
 //  Copyright © 2017年 何辉. All rights reserved.
 //
-
+// - 语音控制 & 语音留言 模块
 import UIKit
 import Speech
-import SVProgressHUD
 import AVFoundation
 import ETILinkSDK
 
@@ -18,6 +17,7 @@ class VoiceControl: BaseViewController  , SFSpeechRecognizerDelegate , ChatDataS
 
     let speechRecognizer = SFSpeechRecognizer(locale: Locale.init(identifier: "zh-cn"))
     
+    @IBOutlet weak var foundtiontxt: UILabel!
     private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
     
     private var recognitionTask: SFSpeechRecognitionTask?
@@ -32,12 +32,18 @@ class VoiceControl: BaseViewController  , SFSpeechRecognizerDelegate , ChatDataS
     
     var SoundURL : URL?   //用来临时存储录音路径URL
     
+    var WhoAmI = VOICE_CONTROL  //语音控制 或 语音留言
     
-    ////定义音频的编码参数，这部分比较重要，决定录制音频文件的格式、音质、容量大小等，建议采用AAC的编码方式
-    let recordSettings = [AVSampleRateKey : NSNumber(value: Float(44100.0) as Float),//声音采样率
-        AVFormatIDKey : NSNumber(value: Int32(kAudioFormatMPEG4AAC) as Int32),//编码格式
-        AVNumberOfChannelsKey : NSNumber(value: 1 as Int32),//采集音轨
-        AVEncoderAudioQualityKey : NSNumber(value: Int32(AVAudioQuality.medium.rawValue) as Int32)]//音频质量
+    @IBOutlet weak var foundationimg: UIImageView!
+    
+    
+    ////定义音频的编码参数，这部分比较重要，否则开发板播放的声音有失真
+    let recordSettings: [String: Any] = [AVSampleRateKey: NSNumber(value: 8000),//采样率
+        AVFormatIDKey: NSNumber(value: kAudioFormatLinearPCM),//音频格式
+        AVLinearPCMBitDepthKey: NSNumber(value: 16),//采样位数
+        AVNumberOfChannelsKey: NSNumber(value: 1),//通道数
+        AVEncoderAudioQualityKey: NSNumber(value: AVAudioQuality.medium.rawValue)//录音质量
+    ]
     
     var tableView:TableView!
     
@@ -58,31 +64,57 @@ class VoiceControl: BaseViewController  , SFSpeechRecognizerDelegate , ChatDataS
     @IBOutlet weak var ParentView: UIView!
     
     @IBAction func microphoneTapped(_ sender: Any) {
-        if audioEngine.isRunning { // 停止识别(停止录音-->更新回话列表)----->如果含有“温度”||“湿度”||“大气”，则发送查询指令到设备,没有以上字符，则显示不能识别指令。
-            SVProgressHUD.dismiss()
-            audioEngine.stop()
-            recognitionRequest?.endAudio()
-            microphoneButton.setTitle("点 击 说 话", for: .normal)
-            // - 停止录音
-            StopLuYin()
-            PlaySound(url: SoundURL!)
-            // - 新增一项到对话列表----->更新视图
-            let Sound =  MessageItem(recordUrl:SoundURL,user:me, date:Date(timeIntervalSinceNow:0), mtype:.mine)
-            Chats.add(Sound)
-            tableView.reloadData()
-            // - 处理语音识别结果
-            DisPoseListenResult()
-            
-        } else {
-            SVProgressHUD.show(withStatus: "识别中...")
-            startRecording()   //开始语音识别
-            LuYin()   //开始录音
-            microphoneButton.setTitle("点 击 结 束", for: .normal)
+        if WhoAmI == VOICE_CONTROL { // - 语音控制模块
+            if audioEngine.isRunning { // 停止识别(停止录音-->更新回话列表)----->如果含有“温度”||“湿度”||“大气”，则发送查询指令到设备,没有以上字符，则显示不能识别指令。
+                dismissRecordImage()
+                audioEngine.stop()
+                recognitionRequest?.endAudio()
+                microphoneButton.setTitle("点 击 说 话", for: .normal)
+                microphoneButton.setTitleColor(UIColor.black, for: .normal)
+                // - 停止录音
+                StopLuYin()
+                // - 新增一项到对话列表----->更新视图
+                let Sound =  MessageItem(recordUrl:SoundURL,user:me, date:Date(timeIntervalSinceNow:0), mtype:.mine)
+                Chats.add(Sound)
+                tableView.reloadData()
+                
+                DisPoseListenResult()
+            } else {
+                ShowRecordImage()
+                startRecording()   //开始语音识别
+                LuYin()   //开始录音
+                microphoneButton.setTitle("点 击 结 束", for: .normal)
+                microphoneButton.setTitleColor(UIColor.red, for: .normal)
+            }
+        }else{// - 语音留言模块
+            if microphoneButton.currentTitle! == "点 击 说 话" {
+                ShowRecordImage()
+                LuYin()
+                microphoneButton.setTitle("点 击 结 束", for: .normal)
+                microphoneButton.setTitleColor(UIColor.red, for: .normal)
+            }else{
+                dismissRecordImage()
+                microphoneButton.setTitle("点 击 说 话", for: .normal)
+                microphoneButton.setTitleColor(UIColor.black, for: .normal)
+                StopLuYin()
+                let Sound =  MessageItem(recordUrl:SoundURL,user:me, date:Date(timeIntervalSinceNow:0), mtype:.mine)
+                Chats.add(Sound)
+                tableView.reloadData()
+                sendFileToDevice(filepath_url: SoundURL!)
+            }
         }
+        
     }
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = "语音控制"
+        if WhoAmI == VOICE_CONTROL {
+            self.title = "语音控制"
+        }else{
+            self.title = "语音留言"
+            foundationimg.image = UIImage(named:"语音留言.png")
+            foundtiontxt.text = "语音留言"
+        }
+        
         
         DeviceUid = defaults.string(forKey: DEVICE_ID_KEY)!
         ViewController.isResponse = false //此处设置主页不需要响应收到的消息(全部由此页面处理)
@@ -183,17 +215,25 @@ class VoiceControl: BaseViewController  , SFSpeechRecognizerDelegate , ChatDataS
     func setupChatTable()
     {
         self.view.bringSubview(toFront: microphoneButton) //将发送button移到最上层，避免被其他视图遮住
-        self.tableView = TableView(frame:CGRect(x: 0, y: 0, width: self.view.frame.size.width, height:self.ParentView.frame.height), style: .plain)
+        self.tableView = TableView(frame:CGRect(x: 0, y: 0, width: self.view.frame.size.width, height:self.ParentView.frame.height - microphoneButton.frame.height-10), style: .plain)
         //创建一个重用的单元格
         self.tableView!.register(TableViewCell.self, forCellReuseIdentifier: "ChatCell")
         me = UserInfo(name:"Xiaoming" ,logo:("头像_设备.png"))
         you  = UserInfo(name:"Xiaohua", logo:("头像_设备.png"))
-        let fouth =  MessageItem(body:"语音控制目前只支持温湿度和大气压查询！",user:me, date:Date(timeIntervalSinceNow:0), mtype:.mine)
-        
-        Chats.add(fouth)
-        self.tableView.chatDataSource = self
-        self.tableView.reloadData()
-        self.ParentView.addSubview(self.tableView)
+        if WhoAmI == VOICE_CONTROL {
+            let fouth =  MessageItem(body:"语音控制目前只支持温湿度和大气压查询！",user:me, date:Date(timeIntervalSinceNow:0), mtype:.mine)
+            Chats.add(fouth)
+            self.tableView.chatDataSource = self
+            self.tableView.reloadData()
+            self.ParentView.addSubview(self.tableView)
+        }else{
+            let fouth =  MessageItem(body:"请确认开发板处于4档位，且跳线帽正确才能播放语音留言。",user:me, date:Date(timeIntervalSinceNow:0), mtype:.mine)
+            Chats.add(fouth)
+            self.tableView.chatDataSource = self
+            self.tableView.reloadData()
+            self.ParentView.addSubview(self.tableView)
+        }
+       
     }
 
     func rowsForChatTable(_ tableView:TableView) -> Int
@@ -212,13 +252,13 @@ class VoiceControl: BaseViewController  , SFSpeechRecognizerDelegate , ChatDataS
         let currentDateTime = Date()
         let formatter = DateFormatter()
         formatter.dateFormat = "ddMMyyyyHHmmss"
-        let recordingName = formatter.string(from: currentDateTime)+".caf"
-        print(recordingName)
+        let recordingName = formatter.string(from: currentDateTime)+".wav"
         
-        let fileManager = FileManager.default
-        let urls = fileManager.urls(for: .documentDirectory, in: .userDomainMask)
-        let documentDirectory = urls[0] as URL
-        let soundURL = documentDirectory.appendingPathComponent(recordingName)
+        //获取Document目录
+        let docDir = NSSearchPathForDirectoriesInDomains(.documentDirectory,
+                                                         .userDomainMask, true)[0]
+        let filepath = docDir + "/\(recordingName)"
+        let soundURL = URL(string:filepath)
         self.SoundURL = soundURL
         return soundURL
     }
@@ -322,6 +362,45 @@ class VoiceControl: BaseViewController  , SFSpeechRecognizerDelegate , ChatDataS
              audioPlayer.play()
             
         } catch {
+        }
+    }
+     let emptyView = UIView() //用来装声音图片的视图
+     let imageView = UIImageView() //录音时显示的image
+    //展示录音识别中图片
+    func ShowRecordImage(){
+        let emptyvieworign = CGPoint(x: 0, y: 0)
+        let emptyviewsize = CGSize(width: self.view.frame.width, height: self.view.frame.height - microphoneButton.frame.height - 10)
+        emptyView.frame = CGRect(origin: emptyvieworign, size: emptyviewsize)
+        emptyView.backgroundColor = UIColor.clear
+        emptyView.isUserInteractionEnabled = true
+        //定义图片的大小和位置
+        let imageorign = CGPoint(x : 0.3147*self.view.frame.width, y : 0.5178*self.view.frame.height)
+        let imagesize = CGSize(width: 0.3815*self.view.frame.width,height: 0.3815*self.view.frame.width)
+        imageView.frame = CGRect(origin : imageorign, size: imagesize)
+        imageView.image = UIImage(named:"识别中.png")
+        
+        emptyView.addSubview(imageView)
+        self.view.addSubview(emptyView)
+    }
+    //移除录音识别中图片
+    func dismissRecordImage(){
+        imageView.removeFromSuperview()
+        emptyView.removeFromSuperview()
+    }
+    //发送语音文件到设备
+    func sendFileToDevice(filepath_url:URL){
+        let filepath = filepath_url.absoluteString
+      
+        self.mainViewController.mAppManager.etManager.fileTo(DeviceUid, filePath: filepath) { (fileInfo, error) in
+            guard error == nil else {
+                let fouth =  MessageItem(body:"留言发送失败",user:self.you, date:Date(timeIntervalSinceNow:0), mtype:.someone)
+                self.Chats.add(fouth)
+                self.tableView.reloadData()
+                return
+            }
+            let fouth =  MessageItem(body:"留言发送成功",user:self.you, date:Date(timeIntervalSinceNow:0), mtype:.someone)
+            self.Chats.add(fouth)
+            self.tableView.reloadData()
         }
     }
 }
