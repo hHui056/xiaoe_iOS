@@ -137,7 +137,7 @@ class VisualInteractive: BaseViewController , ChatDataSource , UITextFieldDelega
     
     func chatTableView(_ tableView:TableView, dataForRow row:Int) -> MessageItem
     {
-        print("这是第\(row)")
+        
         return Chats[row] as! MessageItem
     }
     //发送消息到LED屏显示
@@ -147,6 +147,10 @@ class VisualInteractive: BaseViewController , ChatDataSource , UITextFieldDelega
         }
         if !isChinese(string: input.text!){
             showDialog(data: "只能输入中文！")
+            return
+        }
+        if input.text!.characters.count > 32 {
+            showDialog(data: "最多只能输入32个汉字")
             return
         }
         let msg = MessageItem(body:input.text! as NSString,user:me, date:Date(timeIntervalSinceNow:0), mtype:.mine)
@@ -167,6 +171,8 @@ class VisualInteractive: BaseViewController , ChatDataSource , UITextFieldDelega
     }
     
     func sendMessageToLED(message:String){
+        print("输入的汉字的个数是： \(message.characters.count)")
+        
         let instruction = Instruction.Builder().setCmd(cmd: Instruction.Cmd.CONTROL).setBody(body:LEDControllerReqBody(content:message)).createInstruction()
         
         let message = ETMessage(bytes : instruction!.toByteArray())

@@ -108,6 +108,7 @@ class ScannerViewController: BaseViewController,AVCaptureMetadataOutputObjectsDe
         alertController.addAction(maction)
         self.present(alertController, animated: true, completion: nil)
     }
+
     
     //扫描代理方法
     func captureOutput(_ captureOutput: AVCaptureOutput!, didOutputMetadataObjects metadataObjects: [Any]!, from connection: AVCaptureConnection!) {
@@ -124,6 +125,10 @@ class ScannerViewController: BaseViewController,AVCaptureMetadataOutputObjectsDe
                     do{
                         let result = try JSON(parseJSON:metaData.stringValue)
                         let uid = result["uid"].stringValue
+                        if uid.characters.count != 34 {
+                            self.showDialog(data:"请使用34位UID的开发板来扫描！")
+                            return
+                        }
                         print("uid是：\(uid)")
                         let appkey = result["appkey"].stringValue
                          print("APPKEY是：\(appkey)")

@@ -56,6 +56,12 @@ class ViewController: BaseViewController {
         mAppManager.delegate = self
         mAppManager.discover()
         SVProgressHUD.show(withStatus: "连接中...")
+        
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 5) {
+            if SVProgressHUD.isVisible() && !self.isConnectedServer{
+                SVProgressHUD.showError(withStatus: "连接失败，请检查网络。")
+            }
+        }
     }
     // - 第一次使用，加载绑定设备页面
     func addFristViewController(){
@@ -80,6 +86,9 @@ class ViewController: BaseViewController {
     }
     //设置wifi
     @IBAction func toSettingWifi() {
+        if SVProgressHUD.isVisible() {
+            return
+        }
         let storyboard = UIStoryboard(name: "WifiSetting", bundle: nil)
         
         let anotherView = (storyboard.instantiateViewController(withIdentifier:"wifiset"))
@@ -102,6 +111,9 @@ class ViewController: BaseViewController {
     
     // - 前往二维码扫描绑定设备界面
     @IBAction func bindDevice() {
+        if SVProgressHUD.isVisible() {
+            return
+        }
         let  scanner = ScannerViewController()
         scanner.WhereFrom = FIRST_BIND_DEVICE
         scanner.delegate = self
@@ -141,7 +153,17 @@ class ViewController: BaseViewController {
     }
     //查询温湿度
     func querytemperature(){
-        CheckDeviceIsOnline()
+        if SVProgressHUD.isVisible() {
+            return
+        }
+        if !isConnectedServer{
+            showDialog(data: "与服务器未连接，不能使用此功能")
+            return
+        }
+        if !isDeviceOnline {
+            showDialog(data: "设备不在线")
+            return
+        }
         SVProgressHUD.show(withStatus: "查询中...")
         let instruction = Instruction.Builder().setCmd(cmd: Instruction.Cmd.QUERY).setBody(body: TemperatureAndHumidityReqBody(data1:Instruction.RequestType.BOTH)).createInstruction()
         
@@ -167,13 +189,33 @@ class ViewController: BaseViewController {
     }
     //多彩灯光
     func contralLight(){
-        CheckDeviceIsOnline()
-        
+        if SVProgressHUD.isVisible() {
+            return
+        }
+        if !isConnectedServer{
+            showDialog(data: "与服务器未连接，不能使用此功能")
+            return
+        }
+        if !isDeviceOnline {
+            showDialog(data: "设备不在线")
+            return
+        }
         showControlLightDialog()
     }
     //查询大气压
     func queryatmos(){
-        CheckDeviceIsOnline()
+        if SVProgressHUD.isVisible() {
+            return
+        }
+        if !isConnectedServer{
+            showDialog(data: "与服务器未连接，不能使用此功能")
+            return
+        }
+        if !isDeviceOnline {
+            showDialog(data: "设备不在线")
+            return
+        }
+        
         SVProgressHUD.show(withStatus: "查询中...")
         
         let instruction = Instruction.Builder().setCmd(cmd: Instruction.Cmd.QUERY).setBody(body: AirReqBody(data1:Instruction.RequestType.AIR)).createInstruction()
@@ -199,12 +241,34 @@ class ViewController: BaseViewController {
     }
     //跳转到可视交互
     func goKeShiJiaoHu(){
-         CheckDeviceIsOnline()
+        if SVProgressHUD.isVisible() {
+            return
+        }
+        if !isConnectedServer{
+            showDialog(data: "与服务器未连接，不能使用此功能")
+            return
+        }
+        if !isDeviceOnline {
+            showDialog(data: "设备不在线")
+            return
+        }
+        
          jumpToOtherStoryboard(name: "VisualInteractive", id: "keshijiaohu")
     }
     //跳转到语音控制
     func goYuYinKongZhi(){
-        CheckDeviceIsOnline()
+        if SVProgressHUD.isVisible() {
+            return
+        }
+        if !isConnectedServer{
+            showDialog(data: "与服务器未连接，不能使用此功能")
+            return
+        }
+        if !isDeviceOnline {
+            showDialog(data: "设备不在线")
+            return
+        }
+        
         let storyboard = UIStoryboard(name: "VoiceControl", bundle: nil)
         
         let voice = (storyboard.instantiateViewController(withIdentifier:"Voicecontrol")) as! VoiceControl
@@ -215,7 +279,18 @@ class ViewController: BaseViewController {
     }
     //跳转到语音留言
     func goYuYinLiuYan(){
-        CheckDeviceIsOnline()
+        if SVProgressHUD.isVisible() {
+            return
+        }
+        if !isConnectedServer{
+            showDialog(data: "与服务器未连接，不能使用此功能")
+            return
+        }
+        if !isDeviceOnline {
+            showDialog(data: "设备不在线")
+            return
+        }
+        
         let storyboard = UIStoryboard(name: "VoiceControl", bundle: nil)
         
         let voice = (storyboard.instantiateViewController(withIdentifier:"Voicecontrol")) as! VoiceControl
@@ -224,6 +299,17 @@ class ViewController: BaseViewController {
     }
     //跳转到群组管理
     func goQunZuGuanLi(){
+        if SVProgressHUD.isVisible() {
+            return
+        }
+        if !isConnectedServer{
+            showDialog(data: "与服务器未连接，不能使用此功能")
+            return
+        }
+        if !isDeviceOnline {
+            showDialog(data: "设备不在线")
+            return
+        }
         
         jumpToOtherStoryboard(name: "GroupManager", id: "groupmanager")
     }
@@ -232,7 +318,7 @@ class ViewController: BaseViewController {
             return
         }
         let alertController:UIAlertController = UIAlertController(title: nil, message: data, preferredStyle:  UIAlertControllerStyle.alert)
-        let maction = UIAlertAction(title: "确   认", style: UIAlertActionStyle.default, handler: {(alertAction)-> Void in
+        let maction = UIAlertAction(title: "确  认", style: UIAlertActionStyle.default, handler: {(alertAction)-> Void in
             
           //  NSLog("点击了 确认")
         })
@@ -399,8 +485,6 @@ class ViewController: BaseViewController {
         dataSet.valueLinePart1Length = 0.0
         dataSet.valueLinePart2Length = 0.0
         dataSet.yValuePosition = .insideSlice
-        
-        
         let data = PieChartData(dataSet: dataSet)
         // - 这里还没弄明白，暂设文字描述为透明色不显示（解决内部会显示百分比数字问题）
         data.setValueTextColor(UIColor.clear)
@@ -410,14 +494,8 @@ class ViewController: BaseViewController {
         
         
     }
-    // - 检查开发板是否在线
-    func CheckDeviceIsOnline(){
-        if !isDeviceOnline {
-            SVProgressHUD.showError(withStatus: "设备不在线")
-            return
-        }
-        
-    }
+    
+  
 }
 
 extension ViewController:HeHuiDelegete{

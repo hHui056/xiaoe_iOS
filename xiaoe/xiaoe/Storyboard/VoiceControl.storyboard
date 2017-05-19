@@ -55,7 +55,7 @@
                                 </constraints>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Lv9-dm-lfa">
-                                <rect key="frame" x="11" y="615.5" width="353" height="41.5"/>
+                                <rect key="frame" x="11" y="608.5" width="353" height="48.5"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                 <state key="normal" title="点 击 说 话" backgroundImage="发送语音_bg">
                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
@@ -65,7 +65,7 @@
                                 </connections>
                             </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8iA-cb-cSl">
-                                <rect key="frame" x="0.0" y="185" width="375" height="430.5"/>
+                                <rect key="frame" x="0.0" y="185" width="375" height="423.5"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
                         </subviews>
@@ -82,7 +82,7 @@
                             <constraint firstItem="4R9-9g-267" firstAttribute="top" secondItem="fqa-iP-AgN" secondAttribute="top" id="eVp-Eq-bRo"/>
                             <constraint firstItem="Lv9-dm-lfa" firstAttribute="centerX" secondItem="fqa-iP-AgN" secondAttribute="centerX" id="flg-DT-qio"/>
                             <constraint firstItem="4R9-9g-267" firstAttribute="height" secondItem="fqa-iP-AgN" secondAttribute="height" multiplier="0.277" id="fzP-uX-i9x"/>
-                            <constraint firstItem="Lv9-dm-lfa" firstAttribute="height" secondItem="fqa-iP-AgN" secondAttribute="height" multiplier="0.0625" id="ngB-8P-coA"/>
+                            <constraint firstItem="Lv9-dm-lfa" firstAttribute="height" secondItem="fqa-iP-AgN" secondAttribute="height" multiplier="0.0725" id="ngB-8P-coA"/>
                         </constraints>
                     </view>
                     <connections>

@@ -77,7 +77,6 @@ class VoiceControl: BaseViewController  , SFSpeechRecognizerDelegate , ChatDataS
                 let Sound =  MessageItem(recordUrl:SoundURL,user:me, date:Date(timeIntervalSinceNow:0), mtype:.mine)
                 Chats.add(Sound)
                 tableView.reloadData()
-                
                 DisPoseListenResult()
             } else {
                 ShowRecordImage()

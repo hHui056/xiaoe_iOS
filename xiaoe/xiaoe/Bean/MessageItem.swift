@@ -107,11 +107,13 @@ class MessageItem {
             size.height /= (size.width / 220);
             size.width = 220;
         }
-        let imageView = UIImageView(frame:CGRect(x: 0, y: 0, width: size.width,height: size.height))
+        let urlString = recordUrl!.absoluteString
+        let length = urlString.getFileSize()
+        print("录音文件大小是：  \(length)")
+        let imageView = UIImageView(frame:CGRect(x: 0, y: 0, width: size.width ,height: size.height))
         imageView.image = image
         imageView.layer.cornerRadius = 5.0
         imageView.layer.masksToBounds = true
-        
         let insets:UIEdgeInsets =  (mtype == ChatType.mine ?
             MessageItem.getImageInsetsMine() : MessageItem.getImageInsetsSomeone())
         

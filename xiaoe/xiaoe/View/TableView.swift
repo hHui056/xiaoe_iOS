@@ -180,10 +180,8 @@ class TableView:UITableView,UITableViewDelegate, UITableViewDataSource
     }
     //播放此条录音
     func PlaySound(url:URL){
-       // let testurl = URL(string:"file:///var/mobile/Containers/Data/Application/D6A14D3F-3ECE-4D92-878D-1CDFC2DA10E0/Documents/18052017143628.caf")!
         do {
-            try audioPlayer = AVAudioPlayer(contentsOf: url)
-            
+            try audioPlayer = AVAudioPlayer(contentsOf: url)            
             audioPlayer.play()
             
         } catch {
