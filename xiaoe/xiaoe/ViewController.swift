@@ -553,10 +553,7 @@ extension ViewController:HeHuiDelegete{
         SVProgressHUD.dismiss()
         print("收到消息 type:\(type) topic:\(topic) sender:\(sender) message:\(message)")
         self.messagereceiveddelegate?.onMessageReceived(topic: sender, message: message)
-        //不需要此处处理，直接跳过返回
-        if !ViewController.isResponse {
-                return
-            }
+        
         if topic != nil{
                 return
             }
