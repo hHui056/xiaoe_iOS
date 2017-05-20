@@ -67,6 +67,7 @@ class WifiSetting: BaseViewController {
         disableDeployButton()
         
         wifipassword.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
+        wifipassword.isSecureTextEntry = true
         
         // 启动监听网络
         do {

@@ -202,6 +202,9 @@
 		11AB7D401EB94ECB000D870D /* ETILinkSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11AB7D3F1EB94ECB000D870D /* ETILinkSDK.framework */; };
 		11AB7D411EB94ED0000D870D /* ETILinkSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11AB7D3F1EB94ECB000D870D /* ETILinkSDK.framework */; };
 		11AB7D421EB94ED0000D870D /* ETILinkSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 11AB7D3F1EB94ECB000D870D /* ETILinkSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		11AFE64E1ECF97330094A2AF /* DataTransfer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AFE64D1ECF97330094A2AF /* DataTransfer.swift */; };
+		11AFE6581ECF98640094A2AF /* DataTransfer.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 11AFE6571ECF98640094A2AF /* DataTransfer.storyboard */; };
+		11AFE65A1ECFAD160094A2AF /* MyRegex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AFE6591ECFAD160094A2AF /* MyRegex.swift */; };
 		11B9100B1EBBC82D009F845F /* SVProgressHUD.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11B9100A1EBBC82D009F845F /* SVProgressHUD.framework */; };
 		11B9100C1EBBC837009F845F /* SVProgressHUD.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11B9100A1EBBC82D009F845F /* SVProgressHUD.framework */; };
 		11B9100D1EBBC837009F845F /* SVProgressHUD.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 11B9100A1EBBC82D009F845F /* SVProgressHUD.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -524,6 +527,9 @@
 		1184CA7A1ECB6A3300444144 /* LEDControllerResBody.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LEDControllerResBody.swift; sourceTree = "<group>"; };
 		1184CA841ECB87F800444144 /* libiconv.2.4.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libiconv.2.4.0.tbd; path = usr/lib/libiconv.2.4.0.tbd; sourceTree = SDKROOT; };
 		11AB7D3F1EB94ECB000D870D /* ETILinkSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ETILinkSDK.framework; sourceTree = "<group>"; };
+		11AFE64D1ECF97330094A2AF /* DataTransfer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataTransfer.swift; sourceTree = "<group>"; };
+		11AFE6571ECF98640094A2AF /* DataTransfer.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = DataTransfer.storyboard; sourceTree = "<group>"; };
+		11AFE6591ECFAD160094A2AF /* MyRegex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyRegex.swift; sourceTree = "<group>"; };
 		11B9100A1EBBC82D009F845F /* SVProgressHUD.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SVProgressHUD.framework; sourceTree = "<group>"; };
 		11B9100E1EBBD4BF009F845F /* LEDControllerReqBody.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LEDControllerReqBody.swift; sourceTree = "<group>"; };
 		11C3880C1EC2873D002729A3 /* MyFounctionButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyFounctionButton.swift; sourceTree = "<group>"; };
@@ -627,6 +633,7 @@
 				11060B6C1EC245780079D8D0 /* QRCodeSuccess.storyboard */,
 				1122EA981EC3B9A500AD1991 /* VoiceControl.storyboard */,
 				114DB6151EC3DCB9008211ED /* GroupManager.storyboard */,
+				11AFE6571ECF98640094A2AF /* DataTransfer.storyboard */,
 			);
 			name = Storyboard;
 			path = xiaoe/Storyboard;
@@ -642,6 +649,7 @@
 				1122EA7A1EC3910700AD1991 /* WifiSetting+SmartConfig.swift */,
 				1122EA9A1EC3BAC800AD1991 /* VoiceControl.swift */,
 				114DB6131EC3DC94008211ED /* GroupManager.swift */,
+				11AFE64D1ECF97330094A2AF /* DataTransfer.swift */,
 			);
 			name = UIController;
 			path = xiaoe/UIController;
@@ -1036,6 +1044,7 @@
 				11D6ECCD1EC3850D00515C52 /* InstructionParser.swift */,
 				11D6ECCE1EC3850D00515C52 /* Reachability.swift */,
 				1122EA781EC38BEF00AD1991 /* UIKit.swift */,
+				11AFE6591ECFAD160094A2AF /* MyRegex.swift */,
 			);
 			name = utils;
 			path = xiaoe/utils;
@@ -1271,6 +1280,7 @@
 				11060B6D1EC245780079D8D0 /* QRCodeSuccess.storyboard in Resources */,
 				11529E181EB13A5500E56C24 /* Assets.xcassets in Resources */,
 				11098F231EB2BBFF00B8AEB2 /* WifiSetting.storyboard in Resources */,
+				11AFE6581ECF98640094A2AF /* DataTransfer.storyboard in Resources */,
 				1122EA991EC3B9A500AD1991 /* VoiceControl.storyboard in Resources */,
 				11529E161EB13A5500E56C24 /* Main.storyboard in Resources */,
 				114DB6651EC3F260008211ED /* GroupMember.xib in Resources */,
@@ -1425,6 +1435,7 @@
 				1131ED591ECA1C0400AAE95D /* BubbleChartView.swift in Sources */,
 				112D8CAF1EBA879E00F3AAD1 /* Instruction.swift in Sources */,
 				112D8CB11EBA8B3200F3AAD1 /* Body.swift in Sources */,
+				11AFE65A1ECFAD160094A2AF /* MyRegex.swift in Sources */,
 				1131ED711ECA1C0400AAE95D /* BarChartDataSet.swift in Sources */,
 				1131EDD41ECA1C0400AAE95D /* ChartColorTemplates.swift in Sources */,
 				1131ED5A1ECA1C0400AAE95D /* CandleStickChartView.swift in Sources */,
@@ -1462,6 +1473,7 @@
 				11D6ECEB1EC388EC00515C52 /* ToastWindow.swift in Sources */,
 				1131ED5E1ECA1C0400AAE95D /* LineChartView.swift in Sources */,
 				1131EDA71ECA1C0400AAE95D /* Range.swift in Sources */,
+				11AFE64E1ECF97330094A2AF /* DataTransfer.swift in Sources */,
 				114244741EBD621800B03AB6 /* ChatDataSource.swift in Sources */,
 				114244701EBD61D000B03AB6 /* TableHeaderViewCell.swift in Sources */,
 				1131EDCA1ECA1C0400AAE95D /* SquareShapeRenderer.swift in Sources */,

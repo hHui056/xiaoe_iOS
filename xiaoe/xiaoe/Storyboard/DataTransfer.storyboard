@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Data Transfer-->
+        <scene sceneID="X2U-1o-Xbd">
+            <objects>
+                <viewController storyboardIdentifier="datatrans" id="dz6-XK-OID" customClass="DataTransfer" customModule="xiaoe" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="OM0-IY-bYk"/>
+                        <viewControllerLayoutGuide type="bottom" id="NSW-Vs-vwi"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="igC-fr-Z6v">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KFS-Ut-2Pq" userLabel="顶部View">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="185"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kZV-D7-sZB">
+                                        <rect key="frame" x="0.0" y="156.5" width="375" height="28.5"/>
+                                    </view>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="使用透传板体验此功能" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ULi-La-l6r">
+                                        <rect key="frame" x="131.5" y="144.5" width="112.5" height="12"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="数据透传" translatesAutoresizingMaskIntoConstraints="NO" id="t9v-Mu-gLX" userLabel="wifi logo">
+                                        <rect key="frame" x="158" y="79.5" width="60" height="60"/>
+                                    </imageView>
+                                </subviews>
+                                <color key="backgroundColor" red="0.99999648330000002" green="0.55428749320000004" blue="0.00021703058160000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstItem="t9v-Mu-gLX" firstAttribute="height" secondItem="KFS-Ut-2Pq" secondAttribute="width" multiplier="0.16" id="09S-Yp-mXK"/>
+                                    <constraint firstItem="t9v-Mu-gLX" firstAttribute="centerX" secondItem="KFS-Ut-2Pq" secondAttribute="centerX" id="325-sl-IDU"/>
+                                    <constraint firstItem="ULi-La-l6r" firstAttribute="top" secondItem="t9v-Mu-gLX" secondAttribute="bottom" constant="5" id="FJ6-Ne-kz3"/>
+                                    <constraint firstItem="kZV-D7-sZB" firstAttribute="height" secondItem="KFS-Ut-2Pq" secondAttribute="height" multiplier="0.15" id="L7H-qI-Tek"/>
+                                    <constraint firstAttribute="trailing" secondItem="kZV-D7-sZB" secondAttribute="trailing" id="VGL-Lh-zwP"/>
+                                    <constraint firstItem="ULi-La-l6r" firstAttribute="height" secondItem="KFS-Ut-2Pq" secondAttribute="width" multiplier="0.0315" id="WTM-n4-MG0"/>
+                                    <constraint firstItem="kZV-D7-sZB" firstAttribute="leading" secondItem="KFS-Ut-2Pq" secondAttribute="leading" id="aMb-tL-tku"/>
+                                    <constraint firstItem="t9v-Mu-gLX" firstAttribute="width" secondItem="KFS-Ut-2Pq" secondAttribute="width" multiplier="0.16" id="b5g-4J-brS"/>
+                                    <constraint firstAttribute="bottom" secondItem="kZV-D7-sZB" secondAttribute="bottom" id="d80-a4-d3H"/>
+                                    <constraint firstItem="kZV-D7-sZB" firstAttribute="top" secondItem="ULi-La-l6r" secondAttribute="bottom" id="db0-ve-4ft"/>
+                                    <constraint firstItem="ULi-La-l6r" firstAttribute="centerX" secondItem="KFS-Ut-2Pq" secondAttribute="centerX" id="mSv-lE-qTF"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fZ8-sd-q5a" userLabel="底部View">
+                                <rect key="frame" x="0.0" y="618.5" width="375" height="43.5"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iKl-Sf-QKG" userLabel="发送">
+                                        <rect key="frame" x="290" y="5" width="80" height="38.5"/>
+                                        <state key="normal" title="发送" backgroundImage="发送按钮">
+                                            <color key="titleColor" red="0.1215686277" green="0.1294117719" blue="0.1411764771" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="SendMessage" destination="dz6-XK-OID" eventType="touchUpInside" id="6ND-zM-c8X"/>
+                                        </connections>
+                                    </button>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="249" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="输入消息内容" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="P2e-76-clF">
+                                        <rect key="frame" x="5" y="5" width="280" height="38.5"/>
+                                        <nil key="textColor"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="P2e-76-clF" secondAttribute="bottom" id="16Z-Yn-Ed0"/>
+                                    <constraint firstAttribute="bottom" secondItem="iKl-Sf-QKG" secondAttribute="bottom" id="1v0-13-THM"/>
+                                    <constraint firstAttribute="trailing" secondItem="iKl-Sf-QKG" secondAttribute="trailing" constant="5" id="3JQ-Tg-Nhh"/>
+                                    <constraint firstItem="P2e-76-clF" firstAttribute="leading" secondItem="fZ8-sd-q5a" secondAttribute="leading" constant="5" id="KVK-gW-Emv"/>
+                                    <constraint firstItem="P2e-76-clF" firstAttribute="top" secondItem="fZ8-sd-q5a" secondAttribute="top" constant="5" id="NjY-Gt-UYt"/>
+                                    <constraint firstItem="iKl-Sf-QKG" firstAttribute="leading" secondItem="P2e-76-clF" secondAttribute="trailing" constant="5" id="kcq-Mf-Hvw"/>
+                                    <constraint firstItem="iKl-Sf-QKG" firstAttribute="top" secondItem="fZ8-sd-q5a" secondAttribute="top" constant="5" id="oEw-6t-GnI"/>
+                                    <constraint firstItem="iKl-Sf-QKG" firstAttribute="leading" secondItem="P2e-76-clF" secondAttribute="trailing" constant="5" id="pNI-qo-oGT"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="23n-n8-jW7" userLabel="ParentView">
+                                <rect key="frame" x="0.0" y="185" width="375" height="433.5"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="23n-n8-jW7" secondAttribute="trailing" id="0B6-TZ-onc"/>
+                            <constraint firstItem="NSW-Vs-vwi" firstAttribute="top" secondItem="fZ8-sd-q5a" secondAttribute="bottom" constant="5" id="DBs-MO-VBM"/>
+                            <constraint firstItem="KFS-Ut-2Pq" firstAttribute="leading" secondItem="igC-fr-Z6v" secondAttribute="leading" id="JbF-RA-QiY"/>
+                            <constraint firstItem="23n-n8-jW7" firstAttribute="top" secondItem="KFS-Ut-2Pq" secondAttribute="bottom" id="LBV-vx-i7O"/>
+                            <constraint firstItem="fZ8-sd-q5a" firstAttribute="leading" secondItem="igC-fr-Z6v" secondAttribute="leading" id="P7p-mP-BIW"/>
+                            <constraint firstAttribute="trailing" secondItem="fZ8-sd-q5a" secondAttribute="trailing" id="Rx9-QM-KT2"/>
+                            <constraint firstItem="KFS-Ut-2Pq" firstAttribute="height" secondItem="igC-fr-Z6v" secondAttribute="height" multiplier="0.277" id="XVL-FW-ZTM"/>
+                            <constraint firstItem="23n-n8-jW7" firstAttribute="leading" secondItem="igC-fr-Z6v" secondAttribute="leading" id="ZmL-jF-M71"/>
+                            <constraint firstAttribute="trailing" secondItem="KFS-Ut-2Pq" secondAttribute="trailing" id="hRD-dG-3m9"/>
+                            <constraint firstItem="fZ8-sd-q5a" firstAttribute="top" secondItem="23n-n8-jW7" secondAttribute="bottom" id="uCq-p5-2Zt"/>
+                            <constraint firstItem="KFS-Ut-2Pq" firstAttribute="top" secondItem="igC-fr-Z6v" secondAttribute="top" id="uIS-g0-XJ8"/>
+                            <constraint firstItem="fZ8-sd-q5a" firstAttribute="height" secondItem="igC-fr-Z6v" secondAttribute="height" multiplier="0.065" id="vDX-yj-7yh"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="BottomView" destination="fZ8-sd-q5a" id="d17-n9-Fhx"/>
+                        <outlet property="ParentView" destination="23n-n8-jW7" id="G81-q3-1cm"/>
+                        <outlet property="bottomoragin" destination="DBs-MO-VBM" id="tcZ-JB-FYv"/>
+                        <outlet property="input" destination="P2e-76-clF" id="NtJ-bx-58x"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="YlW-Ah-njn" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-151.19999999999999" y="143.47826086956522"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="发送按钮" width="80" height="55"/>
+        <image name="数据透传" width="68" height="68"/>
+    </resources>
+</document>

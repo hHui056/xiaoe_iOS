@@ -32,6 +32,7 @@ let DEVICE_ID_KEY = "device_id"
 let APPKEY_KEY = "appkey_key"
 let GROUPID_KEY = "group_id_key"
 let GROUPNAME_KEY = "group_name_key"
+let TOUCHUANBAN_UID_KEY = "touchuanban_uid_key"
 
 // --------------------其他常量---------------------------
 let ADD_GROUP_MEMBER_ICON = "addgroupmember"

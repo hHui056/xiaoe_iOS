@@ -13,7 +13,7 @@ import SVProgressHUD
 
 class ViewController: BaseViewController {
     
-      var mAppManager: AppManager!
+     var mAppManager: AppManager!
     
      var isConnectedServer = false //当前手机用户是否连接上服务器
     
@@ -23,7 +23,6 @@ class ViewController: BaseViewController {
     
      let defaults = UserDefaults.standard
     
-    
      var DeviceUid = ""
     
      public static  var isFirstUse = false //是否第一次使用app
@@ -31,6 +30,8 @@ class ViewController: BaseViewController {
      public static  var isResponse = true  //此页面是否需要处理onmessage收到的消息
     
      var leddelegate : LEDReceiveDelegete?
+    
+     var messagereceiveddelegate : MessageReceiveDelegete?
     
      override func viewDidLoad() {
         super.viewDidLoad()
@@ -149,8 +150,15 @@ class ViewController: BaseViewController {
         self.duocaidengguang.addOnClickListener(target: self, action: #selector(contralLight))
         self.yuyinliuyan.addOnClickListener(target: self, action: #selector(goYuYinLiuYan))
         self.qunzhuguanli.addOnClickListener(target: self, action: #selector(goQunZuGuanLi))
+        self.shujutouchuan.addOnClickListener(target: self, action: #selector(GotoDataTransfer))
         
     }
+    // - 跳转到数据透传
+    func GotoDataTransfer(){
+        ShowInputUidDialog()
+      //  jumpToOtherStoryboard(name: "DataTransfer", id: "datatrans")
+    }
+    
     //查询温湿度
     func querytemperature(){
         if SVProgressHUD.isVisible() {
@@ -495,13 +503,66 @@ class ViewController: BaseViewController {
         
     }
     
-  
+    // - 提示输入透传板的UID
+    func ShowInputUidDialog() {
+        var usernameTextField: UITextField?
+       
+        let alertController = UIAlertController(title: "提示",message: "请输入透传板的uid",preferredStyle: UIAlertControllerStyle.alert)
+        
+        let loginAction = UIAlertAction(title: "确认", style: UIAlertActionStyle.default) {
+            (action) -> Void in
+            
+            if let username = usernameTextField?.text {
+                if username == "" {
+                    print("什么也没输入")
+                }else{
+                    print("输入的是：\(username)")
+                    let pattern = "^[0-9A-Za-z]+$"
+                    let macher = MyRegex(pattern)
+                    if macher.match(input: username) && username.characters.count == 34{//满足uid条件
+                        self.defaults.set(username, forKey: TOUCHUANBAN_UID_KEY)
+                        let storyboard = UIStoryboard(name: "DataTransfer", bundle: nil)
+                        let DataTransferView = (storyboard.instantiateViewController(withIdentifier:"datatrans")) as! DataTransfer
+                        DataTransferView.TouChuanBanUid = username
+                        self.navigationController?.pushViewController(DataTransferView, animated:true)
+                    }else{
+                        self.showDialog(data: "输入的Uid有误")
+                    }
+                }
+            } else {
+                print("什么也没输入")
+            }
+        }
+        alertController.addTextField {
+            (txtUsername) -> Void in
+            usernameTextField = txtUsername
+            usernameTextField!.placeholder = "输入uid"
+        }
+        //设置uid为之前保存过的uid
+        if  defaults.string(forKey: DEVICE_ID_KEY) != nil {
+            let ss =  defaults.string(forKey: TOUCHUANBAN_UID_KEY)
+            usernameTextField?.text = ss
+        }
+        alertController.addAction(loginAction)
+        self.present(alertController, animated: true, completion: nil)
+    }
 }
 
 extension ViewController:HeHuiDelegete{
         func onMessage(type: ETMessageType, topic: String?, sender: String?, message: ETReceiveMessage) {
         SVProgressHUD.dismiss()
-        print("bytes是：  \(message.bytes)")
+        print("收到消息 type:\(type) topic:\(topic) sender:\(sender) message:\(message)")
+        self.messagereceiveddelegate?.onMessageReceived(topic: sender, message: message)
+        //不需要此处处理，直接跳过返回
+        if !ViewController.isResponse {
+                return
+            }
+        if topic != nil{
+                return
+            }
+        if sender! != self.DeviceUid {//不是绑定设备回复的消息不处理
+                return
+            }
         let instruction = InstructionParser().parseInstruction(content : message.bytes)
             if instruction == nil {
                 print("查询失败，请确认档位和跳线帽都正确再试")
@@ -572,13 +633,16 @@ extension ViewController:HeHuiDelegete{
     // - 用户状态回调
     func onUserState(userID:String,state:Bool,error:NSError?){
         if error == nil {
-            if state {
-                self.isDeviceOnline = true
-                self.deviceStatus.text = "设备在线"
-            }else{
-                self.isDeviceOnline = false
-                self.deviceStatus.text = "设备离线"
+            if userID == self.DeviceUid {
+                if  state {
+                    self.isDeviceOnline = true
+                    self.deviceStatus.text = "设备在线"
+                }else{
+                    self.isDeviceOnline = false
+                    self.deviceStatus.text = "设备离线"
+                }
             }
+           
         }
         print("user : \(userID) state : \(state)")
     }
@@ -624,4 +688,7 @@ extension ViewController:MessageDelegete,ChartViewDelegate{
 protocol LEDReceiveDelegete {
     func onLEDReceive(body:LEDControllerResBody)
     func onQueryReceive(body:Body)
+}
+protocol MessageReceiveDelegete {
+    func onMessageReceived(topic:String?,message:ETReceiveMessage)
 }
