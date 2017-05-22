@@ -1164,7 +1164,7 @@
 				TargetAttributes = {
 					11529E0C1EB13A5500E56C24 = {
 						CreatedOnToolsVersion = 8.3.2;
-						DevelopmentTeam = WS362643AY;
+						DevelopmentTeam = AN4YYK28KP;
 						ProvisioningStyle = Automatic;
 					};
 					11529E201EB13A5500E56C24 = {
@@ -1650,7 +1650,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = WS362643AY;
+				DEVELOPMENT_TEAM = AN4YYK28KP;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1659,7 +1659,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = xiaoe/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.beidouapp.xiaoe;
+				PRODUCT_BUNDLE_IDENTIFIER = com.beidouapp.hhxiaoe;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_INCLUDE_PATHS = "";
 				"SWIFT_INCLUDE_PATHS[sdk=iphoneos*]" = "${SRCROOT}/xiaoe/Framework/CommonCrypto/iphoneos ${SRCROOT}/xiaoe/Framework/ifaddrs/iphoneos";
@@ -1673,7 +1673,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = WS362643AY;
+				DEVELOPMENT_TEAM = AN4YYK28KP;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1682,7 +1682,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = xiaoe/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.beidouapp.xiaoe;
+				PRODUCT_BUNDLE_IDENTIFIER = com.beidouapp.hhxiaoe;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_INCLUDE_PATHS = "";
 				"SWIFT_INCLUDE_PATHS[sdk=iphoneos*]" = "${SRCROOT}/xiaoe/Framework/CommonCrypto/iphoneos ${SRCROOT}/xiaoe/Framework/ifaddrs/iphoneos";
