@@ -95,7 +95,7 @@ class GroupManager: BaseViewController , UICollectionViewDelegate ,UICollectionV
         mainViewController = self.navigationController!.viewControllers[0] as! ViewController //取得ViewContrallor实例（使用appManage对象）
         
         // ------------初始化数据显示-------------------
-        if defaults.string(forKey: GROUPID_KEY) != nil{//本地有群组数据(id,name)---->获取成员列表
+        if defaults.string(forKey: GROUPID_KEY) != nil{// - 本地有群组数据(id,name)---->获取成员列表
             MyGroupInfo.groupId = defaults.string(forKey: GROUPID_KEY)!
             MyGroupInfo.name = defaults.string(forKey: GROUPNAME_KEY)!
             self.group_name.text = MyGroupInfo.name
@@ -105,7 +105,6 @@ class GroupManager: BaseViewController , UICollectionViewDelegate ,UICollectionV
         }else{//本地无保存的群组数据-------->获取群组数据------>有群组（获取成员列表） ： 无群组(准备创建群组)
             getMyGroupAndGroupMembers()
         }
-        
     }
 
     override func didReceiveMemoryWarning() {
@@ -115,8 +114,8 @@ class GroupManager: BaseViewController , UICollectionViewDelegate ,UICollectionV
     // MARK: 代理
     //每个区的item个数
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-            return NowMembers.count + 1
         
+            return NowMembers.count + 1
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath){
         print("点击了第\(indexPath.section) 分区 ,第\(indexPath.row) 个元素")
@@ -136,7 +135,6 @@ class GroupManager: BaseViewController , UICollectionViewDelegate ,UICollectionV
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: GROUP_MEMBER_CELL, for: indexPath) as! GroupMember
         if indexPath.row != NowMembers.count {//不是最后一项，使用成员数据
-            print("item is: \(NowMembers[indexPath.row])")
             cell.setdata(uid: NowMembers[indexPath.row])
         }else{//最后一项---->加载添加设备图标
             cell.setdata(uid: addicon[0])
@@ -149,10 +147,10 @@ class GroupManager: BaseViewController , UICollectionViewDelegate ,UICollectionV
     }
     
     func showDialog(data:String){
-        let alertController:UIAlertController = UIAlertController(title: "提示", message: data, preferredStyle:  UIAlertControllerStyle.alert)
+        let alertController:UIAlertController = UIAlertController(title: "提示", message: data, preferredStyle:
+            UIAlertControllerStyle.alert)
         let maction = UIAlertAction(title: "确 定", style: UIAlertActionStyle.default, handler: {(alertAction)-> Void in
             
-            //  NSLog("点击了 确认")
         })
         alertController.addAction(maction)
         self.present(alertController, animated: true, completion: nil)
@@ -187,9 +185,7 @@ extension GroupManager : MessageDelegete {
                     // - 保存groupname groupid 到偏好
                     self.defaults.set(groups![0].groupId, forKey: GROUPID_KEY)
                     self.defaults.set(groups![0].name, forKey: GROUPNAME_KEY)
-                    
                     self.getGroupMembers(self.MyGroupInfo.groupId)
-                    
                 }else{//没有加入群------>准备创建群
                     self.group_name.isEnabled = true
                     self.isCreateGroup = true

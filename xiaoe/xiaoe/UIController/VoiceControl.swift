@@ -4,6 +4,15 @@
 //
 //  Created by 何辉 on 2017/5/10.
 //  Copyright © 2017年 何辉. All rights reserved.
+
+/*
+  把烟熄灭了吧，对身体会好一点，虽然这样很难度过想你的夜~
+  舍不得我们拥抱的照片，却又不想让自己看见，把它藏在相框的后面~
+  把窗户打开吧，对心情会好一点,这样我还能微笑着和你分别~
+  那是我最喜欢的唱片，你说那只是一段音乐，却会让我在以后想念~
+  说着付出生命的誓言，回头看看繁华的世界，爱你的每个瞬间像飞驰而过的地铁~
+  说过不会掉下的泪水，现在沸腾着我的双眼，爱你的虎口我脱离了危险~
+ */
 //
 // - 语音控制 & 语音留言 模块
 import UIKit
@@ -69,7 +78,7 @@ class VoiceControl: BaseViewController  , SFSpeechRecognizerDelegate , ChatDataS
                 dismissRecordImage()
                 audioEngine.stop()
                 recognitionRequest?.endAudio()
-                microphoneButton.setTitle("点 击 说 话", for: .normal)
+                microphoneButton.setTitle(CLICK_SPEAK, for: .normal)
                 microphoneButton.setTitleColor(UIColor.black, for: .normal)
                 // - 停止录音
                 StopLuYin()
@@ -82,18 +91,18 @@ class VoiceControl: BaseViewController  , SFSpeechRecognizerDelegate , ChatDataS
                 ShowRecordImage()
                 startRecording()   //开始语音识别
                 LuYin()   //开始录音
-                microphoneButton.setTitle("点 击 结 束", for: .normal)
+                microphoneButton.setTitle(CLICK_END, for: .normal)
                 microphoneButton.setTitleColor(UIColor.red, for: .normal)
             }
         }else{// - 语音留言模块
-            if microphoneButton.currentTitle! == "点 击 说 话" {
+            if microphoneButton.currentTitle! == CLICK_SPEAK {
                 ShowRecordImage()
                 LuYin()
-                microphoneButton.setTitle("点 击 结 束", for: .normal)
+                microphoneButton.setTitle(CLICK_END, for: .normal)
                 microphoneButton.setTitleColor(UIColor.red, for: .normal)
             }else{
                 dismissRecordImage()
-                microphoneButton.setTitle("点 击 说 话", for: .normal)
+                microphoneButton.setTitle(CLICK_SPEAK, for: .normal)
                 microphoneButton.setTitleColor(UIColor.black, for: .normal)
                 StopLuYin()
                 let Sound =  MessageItem(recordUrl:SoundURL,user:me, date:Date(timeIntervalSinceNow:0), mtype:.mine)
@@ -246,7 +255,7 @@ class VoiceControl: BaseViewController  , SFSpeechRecognizerDelegate , ChatDataS
     }
     // - 构建录音保存URL
     func directoryURL() -> URL? {
-        //定义并构建一个url来保存音频，音频文件名为ddMMyyyyHHmmss.caf
+        //定义并构建一个url来保存音频，音频文件名为ddMMyyyyHHmmss.wav
         //根据时间来设置存储文件名
         let currentDateTime = Date()
         let formatter = DateFormatter()

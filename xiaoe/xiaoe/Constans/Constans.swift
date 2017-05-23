@@ -41,6 +41,8 @@ let ADD_DEVICE = "add_device"
 let DEFEAT_RECORD_URL = "defeat_record_url"
 let VOICE_CONTROL = "voice_control"  //语音控制
 let LEAVE_MESSAGE = "leave_message"  //语音留言
+let CLICK_SPEAK = "点 击 说 话"
+let CLICK_END = "点 击 结 束"
 
 // --------------------扫描成功界面------------------------
 let SURE_BIND_DEVICE = "重新绑定"
