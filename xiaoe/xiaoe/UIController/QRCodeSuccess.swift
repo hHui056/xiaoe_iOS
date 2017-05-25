@@ -5,7 +5,7 @@
 //  Created by 何辉 on 2017/5/9.
 //  Copyright © 2017年 何辉. All rights reserved.
 //
-
+// - 扫描成功，绑定设备
 import UIKit
 import ETILinkSDK
 import SVProgressHUD
@@ -30,9 +30,10 @@ class QRCodeSuccess: BaseViewController {
     
     // - 存储开发板信息到本地
     @IBAction func btn_binddevice() {
-        self.defaults.set(device_uid, forKey: DEVICE_ID_KEY)
-        self.defaults.set(device_appkey, forKey: APPKEY_KEY)
+      
         if btn_str == SURE_BIND_DEVICE { //跳转到Main storyboard
+            self.defaults.set(device_uid, forKey: DEVICE_ID_KEY)
+            self.defaults.set(device_appkey, forKey: APPKEY_KEY)
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             let anotherView = (storyboard.instantiateViewController(withIdentifier:"HomeNav"))
             ViewController.isFirstUse = false

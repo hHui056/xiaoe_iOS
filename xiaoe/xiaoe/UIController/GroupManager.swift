@@ -5,6 +5,7 @@
 //  Created by 何辉 on 2017/5/10.
 //  Copyright © 2017年 何辉. All rights reserved.
 //
+// - 群组管理模块
 import UIKit
 import SwiftyJSON
 import ETILinkSDK
@@ -30,6 +31,8 @@ class GroupManager: BaseViewController , UICollectionViewDelegate ,UICollectionV
     var MyGroupInfo = ETILinkSDK.ETGroup() //我的群组信息
     
     var isCreateGroup = false  //是否为创建群组 false：每次添加删除一个群成员     true：群成员数据本地运算，最后的数组用来创建群
+    
+    var WaitingAddUid : [String]?//等待加入群组的uid ,次数组的长度为1
     
     @IBOutlet weak var group_name: MyTextFiled!
     
@@ -62,8 +65,10 @@ class GroupManager: BaseViewController , UICollectionViewDelegate ,UICollectionV
         super.viewDidAppear(animated)
         if isHaveThisUid {
          showDialog(data: "群组中已含有此设备，请勿重复添加！")
-        }else {
-            self.GroupMemberLists.reloadData()
+        }else {//调用api，添加uid到群成员中
+            if WaitingAddUid != nil {
+                addGroupMember(uid: WaitingAddUid![0])
+            }
         }
         isHaveThisUid = false
     }
@@ -118,12 +123,27 @@ class GroupManager: BaseViewController , UICollectionViewDelegate ,UICollectionV
             return NowMembers.count + 1
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath){
-        print("点击了第\(indexPath.section) 分区 ,第\(indexPath.row) 个元素")
+        
         if indexPath.section == 0 && indexPath.row == NowMembers.count {//点击的是添加成员图标
             let  scanner = ScannerViewController()
             scanner.WhereFrom = ADD_DEVICE
             scanner.delegate = self
             self.navigationController?.pushViewController(scanner, animated: true)
+        }else{//点击的是成员头像
+            print("点击的成员的id是； \(NowMembers[indexPath.row])")
+            let alertController:UIAlertController = UIAlertController(title: "提示", message: "确定将此设备移出群组？", preferredStyle:
+                UIAlertControllerStyle.alert)
+            let maction = UIAlertAction(title: "确定", style: UIAlertActionStyle.default, handler: {(alertAction)-> Void in
+                self.deleteGroupMember(userIndex: indexPath.row)
+            })
+           
+            let maction1 = UIAlertAction(title: "取消", style: UIAlertActionStyle.default, handler: {(alertAction)-> Void in
+                
+            })
+            alertController.addAction(maction)
+            alertController.addAction(maction1)
+            self.present(alertController, animated: true, completion: nil)
+            
         }
     }
     //分区个数
@@ -167,8 +187,7 @@ extension GroupManager : MessageDelegete {
                         return
                     }
                 }
-                let uidarray = [message]
-                self.NowMembers = uidarray + NowMembers
+                WaitingAddUid = [message]
     }
    //获取我加入的群----->此例子中只允许加入一个群
     func getMyGroupAndGroupMembers(){
@@ -239,14 +258,35 @@ extension GroupManager : MessageDelegete {
     }
   
     // - 删除群成员(每次删除一个)
-    func deleteGroupMember(userId:String){
+    func deleteGroupMember(userIndex:Int){
         SVProgressHUD.show(withStatus: "删除中...")
-        mainViewController.mAppManager.etManager.removeGroupMembers(self.MyGroupInfo.groupId, userList: [userId]) { (error) in
+        mainViewController.mAppManager.etManager.removeGroupMembers(self.MyGroupInfo.groupId, userList: [self.NowMembers[userIndex]]) { (error) in
             if error == nil {//删除成功
                SVProgressHUD.showSuccess(withStatus: "删除成功")
+               self.NowMembers.remove(at: userIndex)
+               self.GroupMemberLists.reloadData()
             } else {//删除失败
                SVProgressHUD.showSuccess(withStatus: "删除失败")
             }
         }
     }
+    
+    //  - 添加群成员
+    func addGroupMember(uid:String){
+        SVProgressHUD.show(withStatus: "添加中...")
+        mainViewController.mAppManager.etManager.addGroupMembers(self.MyGroupInfo.groupId, userList: [uid]){(users,error) in
+            SVProgressHUD.dismiss()
+            if error == nil {//添加成功
+                if self.WaitingAddUid == nil{
+                    return
+                }
+                self.NowMembers = self.WaitingAddUid! + self.NowMembers
+                self.GroupMemberLists.reloadData()
+            }else{//添加失败
+                self.WaitingAddUid = nil
+            }
+        }
+        }
+
 }
+

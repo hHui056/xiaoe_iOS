@@ -5,10 +5,12 @@
 //  Created by 何辉 on 2017/5/2.
 //  Copyright © 2017年 何辉. All rights reserved.
 //
+// - 可视交互模块
 import Foundation
 import UIKit
 import ETILinkSDK
 import SVProgressHUD
+
 class VisualInteractive: BaseViewController , ChatDataSource , UITextFieldDelegate , LEDReceiveDelegete {
     
     let CELL_MESSAGE = "CELL_SHOW_MESSAGE"
@@ -119,8 +121,8 @@ class VisualInteractive: BaseViewController , ChatDataSource , UITextFieldDelega
         self.tableView = TableView(frame:CGRect(x: 0, y: 0, width: self.view.frame.size.width, height:self.ParentView.frame.height - BottomView.frame.height - 10), style: .plain)
         //创建一个重用的单元格
         self.tableView!.register(TableViewCell.self, forCellReuseIdentifier: "ChatCell")
-        me = UserInfo(name:"Xiaoming" ,logo:("头像_设备.png"))
-        you  = UserInfo(name:"Xiaohua", logo:("头像_设备.png"))
+        me = UserInfo(name:"me" ,logo:("头像_设备.png"))
+        you  = UserInfo(name:"you", logo:("头像_设备.png"))
         //   let second =  MessageItem(image:UIImage(named:"sz.png")!,user:me, date:Date(timeIntervalSinceNow:-90000290), mtype:.mine)
         let fouth =  MessageItem(body:"请先确定开发板处于1档位且跳线帽插入正确，再发送消息!",user:me, date:Date(timeIntervalSinceNow:0), mtype:.mine)
         

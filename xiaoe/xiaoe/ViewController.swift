@@ -180,16 +180,14 @@ class ViewController: BaseViewController {
         
         mAppManager.etManager.chatTo(DeviceUid, message: message) { (error) in
             guard error == nil else {
-                SVProgressHUD.showError(withStatus: "查询失败！")
+                SVProgressHUD.showError(withStatus: "查询失败")
                 return
             }
             
             print("chatto [\(self.DeviceUid)], content: \(message) ")
         }
-        
-        
-        //8s无查询回复则消失提示框
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 8) {
+        //15s无查询回复则消失提示框
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 15) {
             if SVProgressHUD.isVisible(){
                 SVProgressHUD.showError(withStatus: "查询失败")
             }

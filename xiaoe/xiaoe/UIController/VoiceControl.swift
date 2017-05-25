@@ -226,8 +226,8 @@ class VoiceControl: BaseViewController  , SFSpeechRecognizerDelegate , ChatDataS
         self.tableView = TableView(frame:CGRect(x: 0, y: 0, width: self.view.frame.size.width, height:self.ParentView.frame.height - microphoneButton.frame.height-10), style: .plain)
         //创建一个重用的单元格
         self.tableView!.register(TableViewCell.self, forCellReuseIdentifier: "ChatCell")
-        me = UserInfo(name:"Xiaoming" ,logo:("头像_设备.png"))
-        you  = UserInfo(name:"Xiaohua", logo:("头像_设备.png"))
+        me = UserInfo(name:"me" ,logo:("头像_设备.png"))
+        you  = UserInfo(name:"you", logo:("头像_设备.png"))
         if WhoAmI == VOICE_CONTROL {
             let fouth =  MessageItem(body:"语音控制目前只支持温湿度和大气压查询！",user:me, date:Date(timeIntervalSinceNow:0), mtype:.mine)
             Chats.add(fouth)

@@ -4,6 +4,18 @@
 //
 //  Created by 何辉 on 2017/5/19.
 //  Copyright © 2017年 何辉. All rights reserved.
+/*
+ 热河路就像80年代的金坛县，梧桐 垃圾 灰尘 和各式各样的杂货店~
+ 人们总是早早的离开，拉上卷帘门，在天黑前穿上衣服，点一根烟~
+ 热河路有一家开了好多年的理发店 不管剪什么样的发型 你只要付5块钱~
+ 老板和他的妹妹坐在椅子上对着镜子一言不发 他们的老家在身后在岸边在安徽在全椒县~
+ 没有人在热河路谈恋爱 总有人在天亮时伤感 如果年轻时你没来过热河路 那你现在的生活是不是很幸福~
+ 纪念碑旁有一家破旧的电影院 往北走五百米就是南京火车西站~
+ 每天都有外地人在直线和曲线之间迷路 气喘嘘嘘眼泪模糊 奔跑跌倒奔跑~
+ 秋林龙虾换了新的地方 32路还是穿过挹江门 高架桥拆了修了新的隧道 走来走去走不出我的盐仓桥~
+ 来到城市已经八百九十六天 热河路一直是相同的容颜~
+ 偶尔有干净的潘西路过 她不会说你好再见~
+*/
 //
 // - 数据透传模块（使用透传板，每次需要输入透传板uid）< - 透传板uid可以连接上串口打印波特率115200查看 - >
 
@@ -102,8 +114,8 @@ class DataTransfer: BaseViewController , UITextFieldDelegate , ChatDataSource , 
         self.tableView = TableView(frame:CGRect(x: 0, y: 0, width: self.view.frame.size.width, height:self.ParentView.frame.height - BottomView.frame.height - 10), style: .plain)
         //创建一个重用的单元格
         self.tableView!.register(TableViewCell.self, forCellReuseIdentifier: "ChatCell")
-        me = UserInfo(name:"Xiaoming" ,logo:("头像_设备.png"))
-        you  = UserInfo(name:"Xiaohua", logo:("头像_设备.png"))
+        me = UserInfo(name:"me" ,logo:("头像_设备.png"))
+        you  = UserInfo(name:"you", logo:("头像_设备.png"))
         //   let second =  MessageItem(image:UIImage(named:"sz.png")!,user:me, date:Date(timeIntervalSinceNow:-90000290), mtype:.mine)
         let item =  MessageItem(body:"请确认你的透传板在线，再使用透传功能。",user:me, date:Date(timeIntervalSinceNow:0), mtype:.mine)
         
@@ -117,7 +129,7 @@ class DataTransfer: BaseViewController , UITextFieldDelegate , ChatDataSource , 
         if topic! == TouChuanBanUid {
             let receive = String(bytes: message.bytes, encoding: String.Encoding.utf8)
             
-            let item =  MessageItem(body:(receive as? NSString)!,user:you, date:Date(timeIntervalSinceNow:0), mtype:.someone)
+            let item =  MessageItem(body:(receive as NSString?)!,user:you, date:Date(timeIntervalSinceNow:0), mtype:.someone)
             
             Chats.add(item)
             self.tableView.reloadData()

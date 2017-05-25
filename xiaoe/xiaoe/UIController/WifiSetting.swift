@@ -5,7 +5,7 @@
 //  Created by 何辉 on 2017/4/27.
 //  Copyright © 2017年 何辉. All rights reserved.
 //
-
+// - 配置WiFi模块
 import UIKit
 import SystemConfiguration.CaptiveNetwork
 import EspTouch
