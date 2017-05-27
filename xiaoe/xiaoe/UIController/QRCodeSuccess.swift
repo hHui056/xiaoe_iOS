@@ -6,6 +6,7 @@
 //  Copyright © 2017年 何辉. All rights reserved.
 //
 // - 扫描成功，绑定设备
+
 import UIKit
 import ETILinkSDK
 import SVProgressHUD
@@ -46,6 +47,7 @@ class QRCodeSuccess: BaseViewController {
             self.navigationController?.popToViewController(viewCtl, animated: true)
         }
     }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.label_appkey.text = device_appkey

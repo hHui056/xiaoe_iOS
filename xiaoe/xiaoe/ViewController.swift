@@ -237,8 +237,8 @@ class ViewController: BaseViewController {
             
             print("chatto [\(self.DeviceUid)], content: \(message) ")
         }
-        //8s无查询回复则消失提示框
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 8) {
+        //15s无查询回复则消失提示框
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 15) {
             if SVProgressHUD.isVisible(){
                 SVProgressHUD.showError(withStatus: "查询失败")
             }
@@ -280,8 +280,6 @@ class ViewController: BaseViewController {
         let voice = (storyboard.instantiateViewController(withIdentifier:"Voicecontrol")) as! VoiceControl
         voice.WhoAmI = VOICE_CONTROL
         self.navigationController?.pushViewController(voice, animated:true)
-        
-        
     }
     //跳转到语音留言
     func goYuYinLiuYan(){

@@ -16,8 +16,11 @@
 //
 // - 语音控制 & 语音留言 模块
 import UIKit
+
 import Speech
+
 import AVFoundation
+
 import ETILinkSDK
 
 class VoiceControl: BaseViewController  , SFSpeechRecognizerDelegate , ChatDataSource , LEDReceiveDelegete{

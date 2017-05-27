@@ -11,7 +11,6 @@ class TableView:UITableView,UITableViewDelegate, UITableViewDataSource
 {
     //用于保存所有消息
     var bubbleSection:NSMutableArray!
-    
     //数据源，用于与 ViewController 交换数据
     var chatDataSource:ChatDataSource!
     
@@ -20,6 +19,8 @@ class TableView:UITableView,UITableViewDelegate, UITableViewDataSource
     var  typingBubble:ChatBubbleTypingType!
     
     var audioPlayer:AVAudioPlayer! //用于播放录音
+    
+    var VoiceImages = [UIImageView]() //存所有我发出的语音图片项
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -30,9 +31,7 @@ class TableView:UITableView,UITableViewDelegate, UITableViewDataSource
         self.snapInterval = TimeInterval(60 * 60 * 24) //one day
         self.typingBubble = ChatBubbleTypingType.nobody
         self.bubbleSection = NSMutableArray()
-        
         super.init(frame:frame,  style:style)
-        
         self.backgroundColor = UIColor.clear
         self.separatorStyle = UITableViewCellSeparatorStyle.none
         self.delegate = self
@@ -44,11 +43,11 @@ class TableView:UITableView,UITableViewDelegate, UITableViewDataSource
         self.showsVerticalScrollIndicator = false
         self.showsHorizontalScrollIndicator = false
         self.bubbleSection = NSMutableArray()
+        self.VoiceImages = [UIImageView]()
         var count =  0
         if ((self.chatDataSource != nil))
         {
             count = self.chatDataSource.rowsForChatTable(self)
-            
             if(count > 0)
             {
                 let bubbleData =  NSMutableArray(capacity:count)
@@ -57,17 +56,17 @@ class TableView:UITableView,UITableViewDelegate, UITableViewDataSource
                 {
                     let object =  self.chatDataSource.chatTableView(self, dataForRow:i)
                     bubbleData.add(object)
+                    if object.recordUrl != nil {
+                        self.VoiceImages.append(object.recordImageView!)
+                    }
                 }
                 bubbleData.sort(comparator: sortDate)
-                
                 var last =  ""
-                
                 var currentSection = NSMutableArray()
                 // 创建一个日期格式器
                 let dformatter = DateFormatter()
                 // 为日期格式器设置格式字符串
                 dformatter.dateFormat = "dd"
-                
                 for i in 0 ..< count
                 {
                     let data =  bubbleData[i] as! MessageItem
@@ -79,18 +78,15 @@ class TableView:UITableView,UITableViewDelegate, UITableViewDataSource
                         self.bubbleSection.add(currentSection)
                     }
                     (self.bubbleSection[self.bubbleSection.count-1] as AnyObject).add(data)
-                    
                     last = datestr
                 }
             }
         }
         super.reloadData()
-        
         //滑向最后一部分
         let secno = self.bubbleSection.count - 1
         let indexPath =  IndexPath(row:(self.bubbleSection[secno] as AnyObject).count,section:secno)
-        
-        self.scrollToRow(at: indexPath,                at:UITableViewScrollPosition.bottom,animated:true)
+        self.scrollToRow(at: indexPath,at:UITableViewScrollPosition.bottom,animated:true)
     }
     
     //按日期排序方法
@@ -120,8 +116,7 @@ class TableView:UITableView,UITableViewDelegate, UITableViewDataSource
         if (section >= self.bubbleSection.count)
         {
             return 1
-        }
-        
+        }        
         return (self.bubbleSection[section] as AnyObject).count + 1
     }
     
@@ -135,24 +130,38 @@ class TableView:UITableView,UITableViewDelegate, UITableViewDataSource
         }
         let section  =  self.bubbleSection[indexPath.section] as! NSMutableArray
         let data = section[indexPath.row - 1]
-        
+            
         let item =  data as! MessageItem
         let height  =  max(item.insets.top + item.view.frame.size.height  + item.insets.bottom, 52) + 10
         return height
     }
     //  - 每一项的选中事件
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("聊天信息选中的是第 \(indexPath.row) 项")
         let section  =  self.bubbleSection[indexPath.section] as! NSMutableArray
         let data = section[indexPath.row - 1] as! MessageItem
-     //   let message : MessageItem = bubbleSection[indexPath.row] as! MessageItem
+     
         if data.recordUrl != nil { //此处播放语音消息
+            for image in VoiceImages {//所有项播放动画停止
+                image.stopAnimating()
+            }
             PlaySound(url: data.recordUrl!)
             print("语音地址是： \(data.recordUrl!)")
+            data.recordImageView!.startAnimating()
+            //创建定时器 监听录音是否处于播放状态，没播放则停止动画
+            let timer =  DispatchSource.makeTimerSource(flags: [], queue:DispatchQueue.main)
+            timer.scheduleRepeating(deadline: .now(), interval: .seconds(1) ,leeway:.milliseconds(40))
+            timer.setEventHandler {                
+                if !self.audioPlayer.isPlaying {
+                    data.recordImageView!.stopAnimating()
+                    timer.cancel()
+                }
+                
+            }
+            timer.activate()
         }
     }
     
-    //返回自定义的 TableViewCell
+    // - 返回自定义的 TableViewCell
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath)
         -> UITableViewCell {
         // Header based on snapInterval
@@ -175,7 +184,6 @@ class TableView:UITableView,UITableViewDelegate, UITableViewDataSource
         let data = section[indexPath.row - 1]
         
         let cell =  TableViewCell(data:data as! MessageItem, reuseIdentifier:cellId)
-        
         return cell
     }
     //播放此条录音
@@ -183,7 +191,6 @@ class TableView:UITableView,UITableViewDelegate, UITableViewDataSource
         do {
             try audioPlayer = AVAudioPlayer(contentsOf: url)            
             audioPlayer.play()
-            
         } catch {
             print("播放失败")
         }

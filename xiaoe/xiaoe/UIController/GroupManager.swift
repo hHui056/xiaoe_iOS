@@ -6,10 +6,12 @@
 //  Copyright © 2017年 何辉. All rights reserved.
 //
 // - 群组管理模块
+
 import UIKit
 import SwiftyJSON
 import ETILinkSDK
 import SVProgressHUD
+
 class GroupManager: BaseViewController , UICollectionViewDelegate ,UICollectionViewDataSource {
     
     let TAG = "GroupManager"
@@ -60,18 +62,28 @@ class GroupManager: BaseViewController , UICollectionViewDelegate ,UICollectionV
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.group_name.resignFirstResponder()
     }
+    
     //视图出现时重新刷新grid数据显示
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if isHaveThisUid {
          showDialog(data: "群组中已含有此设备，请勿重复添加！")
         }else {//调用api，添加uid到群成员中
-            if WaitingAddUid != nil {
-                addGroupMember(uid: WaitingAddUid![0])
+            if !isCreateGroup {
+                if WaitingAddUid != nil {
+                    addGroupMember(uid: WaitingAddUid![0])
+                }
+            }else{
+                if WaitingAddUid != nil {
+                    self.NowMembers = self.WaitingAddUid! + self.NowMembers
+                    self.GroupMemberLists.reloadData()
+                }
             }
+            
         }
         isHaveThisUid = false
     }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "群组管理"
@@ -272,6 +284,7 @@ extension GroupManager : MessageDelegete {
     }
     
     //  - 添加群成员
+    
     func addGroupMember(uid:String){
         SVProgressHUD.show(withStatus: "添加中...")
         mainViewController.mAppManager.etManager.addGroupMembers(self.MyGroupInfo.groupId, userList: [uid]){(users,error) in
@@ -286,7 +299,7 @@ extension GroupManager : MessageDelegete {
                 self.WaitingAddUid = nil
             }
         }
-        }
+    }
 
 }
 
