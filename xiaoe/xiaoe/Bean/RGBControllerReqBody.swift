@@ -66,6 +66,14 @@ class RGBControllerReqBody:Body{
             data[1] = 150
             data[2] = 0
             data[3] = 255
+        case LIGHT_COLORS[12]://开灯
+            data[1] = 255
+            data[2] = 255
+            data[3] = 255
+        case LIGHT_COLORS[13]://关灯
+            data[1] = 0
+            data[2] = 0
+            data[3] = 0
         default:
             data[1] = 0xe6
             data[2] = 0x1d

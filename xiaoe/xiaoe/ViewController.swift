@@ -547,7 +547,6 @@ class ViewController: BaseViewController {
 extension ViewController:HeHuiDelegete{
         func onMessage(type: ETMessageType, topic: String?, sender: String?, message: ETReceiveMessage) {
         SVProgressHUD.dismiss()
-        print("收到消息 type:\(type) topic:\(topic) sender:\(sender) message:\(message)")
         self.messagereceiveddelegate?.onMessageReceived(topic: sender, message: message)
         
         if topic != nil{
@@ -578,6 +577,7 @@ extension ViewController:HeHuiDelegete{
                 if !rgbbody.isSuccess {
                     showDialog(data: "控制灯光失败！")
                 }
+                self.leddelegate?.onQueryReceive(body: rgbbody)
             }else if ResBody is LEDControllerResBody {
                 let ledbody = ResBody as! LEDControllerResBody
                 self.leddelegate?.onLEDReceive(body: ledbody)

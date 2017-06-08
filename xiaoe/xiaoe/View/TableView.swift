@@ -27,6 +27,7 @@ class TableView:UITableView,UITableViewDelegate, UITableViewDataSource
     }
     
     override init(frame: CGRect, style: UITableViewStyle) {
+
         //the snap interval in seconds implements a headerview to seperate chats
         self.snapInterval = TimeInterval(60 * 60 * 24) //one day
         self.typingBubble = ChatBubbleTypingType.nobody
@@ -37,7 +38,7 @@ class TableView:UITableView,UITableViewDelegate, UITableViewDataSource
         self.delegate = self
         self.dataSource = self
     }
-    
+    // - 重新加载视图
     override func reloadData()
     {
         self.showsVerticalScrollIndicator = false
@@ -65,7 +66,7 @@ class TableView:UITableView,UITableViewDelegate, UITableViewDataSource
                 var currentSection = NSMutableArray()
                 // 创建一个日期格式器
                 let dformatter = DateFormatter()
-                // 为日期格式器设置格式字符串
+                // 为日期格式器设置格式字符串3.
                 dformatter.dateFormat = "dd"
                 for i in 0 ..< count
                 {
@@ -88,7 +89,6 @@ class TableView:UITableView,UITableViewDelegate, UITableViewDataSource
         let indexPath =  IndexPath(row:(self.bubbleSection[secno] as AnyObject).count,section:secno)
         self.scrollToRow(at: indexPath,at:UITableViewScrollPosition.bottom,animated:true)
     }
-    
     //按日期排序方法
     func sortDate(_ m1: Any, m2: Any) -> ComparisonResult {
         if((m1 as! MessageItem).date.timeIntervalSince1970 < (m2 as! MessageItem).date.timeIntervalSince1970)
@@ -101,7 +101,6 @@ class TableView:UITableView,UITableViewDelegate, UITableViewDataSource
         }
     }
     
-    //第一个方法返回分区数
     func numberOfSections(in tableView:UITableView)->Int {
         var result = self.bubbleSection.count
         if (self.typingBubble != ChatBubbleTypingType.nobody)

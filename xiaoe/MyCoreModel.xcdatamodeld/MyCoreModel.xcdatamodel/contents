@@ -1,10 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="12141" systemVersion="16E195" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="WifiInfo" representedClassName="WifiInfo" syncable="YES" codeGenerationType="class">
-        <attribute name="passwrold" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="wifiname" optional="YES" attributeType="String" syncable="YES"/>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="12141" systemVersion="16F73" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="VisualInteractMessage" representedClassName="VisualInteractMessage" syncable="YES" codeGenerationType="class">
+        <attribute name="data" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="isMe" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+    </entity>
+    <entity name="VoiceControlMessage" representedClassName="VoiceControlMessage" syncable="YES" codeGenerationType="class">
+        <attribute name="controlresult" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="isMe" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="soundurl" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="YuYinLiuYanMessage" representedClassName="YuYinLiuYanMessage" syncable="YES" codeGenerationType="class">
+        <attribute name="isMe" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="sendresult" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="soundurl" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <elements>
-        <element name="WifiInfo" positionX="169" positionY="6" width="128" height="75"/>
+        <element name="VisualInteractMessage" positionX="169" positionY="6" width="128" height="75"/>
+        <element name="VoiceControlMessage" positionX="171" positionY="18" width="128" height="90"/>
+        <element name="YuYinLiuYanMessage" positionX="180" positionY="45" width="128" height="90"/>
     </elements>
 </model>

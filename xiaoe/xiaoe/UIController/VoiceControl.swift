@@ -49,7 +49,7 @@ class VoiceControl: BaseViewController  , SFSpeechRecognizerDelegate , ChatDataS
     @IBOutlet weak var foundationimg: UIImageView!
     
     
-    ////定义音频的编码参数，这部分比较重要，否则开发板播放的声音有失真
+    // - 定义音频的编码参数，这部分比较重要，否则开发板播放的声音有失真
     let recordSettings: [String: Any] = [AVSampleRateKey: NSNumber(value: 8000),//采样率
         AVFormatIDKey: NSNumber(value: kAudioFormatLinearPCM),//音频格式
         AVLinearPCMBitDepthKey: NSNumber(value: 16),//采样位数
@@ -77,7 +77,7 @@ class VoiceControl: BaseViewController  , SFSpeechRecognizerDelegate , ChatDataS
     
     @IBAction func microphoneTapped(_ sender: Any) {
         if WhoAmI == VOICE_CONTROL { // - 语音控制模块
-            if audioEngine.isRunning { // 停止识别(停止录音-->更新回话列表)----->如果含有“温度”||“湿度”||“大气”，则发送查询指令到设备,没有以上字符，则显示不能识别指令。
+            if audioEngine.isRunning { // 停止识别(停止录音-->更新回话列表)----->如果含有“温度”||“湿度”||“大气”||“开关灯”，则发送查询指令到设备,没有以上字符，则显示不能识别指令。
                 dismissRecordImage()
                 audioEngine.stop()
                 recognitionRequest?.endAudio()
@@ -232,7 +232,7 @@ class VoiceControl: BaseViewController  , SFSpeechRecognizerDelegate , ChatDataS
         me = UserInfo(name:"me" ,logo:("头像_设备.png"))
         you  = UserInfo(name:"you", logo:("头像_设备.png"))
         if WhoAmI == VOICE_CONTROL {
-            let fouth =  MessageItem(body:"语音控制目前只支持温湿度和大气压查询！",user:me, date:Date(timeIntervalSinceNow:0), mtype:.mine)
+            let fouth =  MessageItem(body:"语音控制提供查询温湿度、大气压和控制灯光开关功能！",user:me, date:Date(timeIntervalSinceNow:0), mtype:.mine)
             Chats.add(fouth)
             self.tableView.chatDataSource = self
             self.tableView.reloadData()
@@ -252,6 +252,7 @@ class VoiceControl: BaseViewController  , SFSpeechRecognizerDelegate , ChatDataS
         return self.Chats.count
     }
     
+    
     func chatTableView(_ tableView:TableView, dataForRow row:Int) -> MessageItem
     {
         return Chats[row] as! MessageItem
@@ -266,8 +267,7 @@ class VoiceControl: BaseViewController  , SFSpeechRecognizerDelegate , ChatDataS
         let recordingName = formatter.string(from: currentDateTime)+".wav"
         
         //获取Document目录
-        let docDir = NSSearchPathForDirectoriesInDomains(.documentDirectory,
-                                                         .userDomainMask, true)[0]
+        let docDir = NSSearchPathForDirectoriesInDomains(.documentDirectory,.userDomainMask, true)[0]
         let filepath = docDir + "/\(recordingName)"
         let soundURL = URL(string:filepath)
         self.SoundURL = soundURL
@@ -292,7 +292,7 @@ class VoiceControl: BaseViewController  , SFSpeechRecognizerDelegate , ChatDataS
             }
         }
     }
-    //停止录音
+    // - 停止录音
     func StopLuYin(){
         audioRecorder.stop()
         let audioSession = AVAudioSession.sharedInstance()
@@ -305,22 +305,28 @@ class VoiceControl: BaseViewController  , SFSpeechRecognizerDelegate , ChatDataS
     // - 处理识别过后的文字  能识别成指令则发送，否则给出对应提示
     
     func DisPoseListenResult(){
-        if ListenResult.contains("温") || ListenResult.contains("湿"){ // 查询温湿度
+        if ListenResult.contains("温") || ListenResult.contains("湿") || ListenResult.contains("度"){ // 查询温湿度
             sendTempOrAirReq(isTemp: true)
         }else if ListenResult.contains("气压") || ListenResult.contains("大气") { //查询大气压
             sendTempOrAirReq(isTemp: false)
             
+        }else if ListenResult.contains("关灯")||ListenResult.contains("关"){//关灯
+            OpenOrCloseLight(isOpen:false)
+            
+        }else if ListenResult.contains("开灯")||ListenResult.contains("开"){//开灯
+            OpenOrCloseLight(isOpen:true)
         }else{//指令无法识别
             let item =  MessageItem(body:"指令无法识别",user:you, date:Date(timeIntervalSinceNow:0), mtype:.someone)
             Chats.add(item)
             tableView.reloadData()
         }
+        self.ListenResult = "" //处理了此条消息，设备内容至空
     }
-    //收到led控制反馈--->此处不处理
+    // - 收到led控制反馈--->此处不处理
     func onLEDReceive(body: LEDControllerResBody) {
         
     }
-    //收到查询反馈指令
+    // - 收到查询反馈指令
     func onQueryReceive(body: Body) {
         if body is TemperatureAndHumidityResBody { //温湿度查询回复
             let tempbody = body as! TemperatureAndHumidityResBody
@@ -328,14 +334,19 @@ class VoiceControl: BaseViewController  , SFSpeechRecognizerDelegate , ChatDataS
             let item = MessageItem(body:showstr as NSString,user:you, date:Date(timeIntervalSinceNow:0), mtype:.someone)
             Chats.add(item)
             tableView.reloadData()
-        }else{//大气压查询回复
+        }else if body is AirResBody {//大气压查询回复
             let airbody = body as! AirResBody
             let showstr = "大气压 (Pa) \(airbody.air) \n\n海拔 (m) \(airbody.high)"
             let item = MessageItem(body:showstr as NSString,user:you, date:Date(timeIntervalSinceNow:0), mtype:.someone)
             Chats.add(item)
             tableView.reloadData()
+        }else if body is RGBControllerResBody{//灯光控制反馈
+            let item = MessageItem(body:"灯光控制成功",user:you, date:Date(timeIntervalSinceNow:0), mtype:.someone)
+            Chats.add(item)
+            tableView.reloadData()
         }
     }
+    
     // - 发送温湿度或者大气压查询指令
     // - isTemp = true    查询温湿度
     // - isTemp = false   查询大气压
@@ -363,6 +374,27 @@ class VoiceControl: BaseViewController  , SFSpeechRecognizerDelegate , ChatDataS
             }
             print("chatto [\(self.DeviceUid)], content: \(message) ")
         }
+      
+    }
+    // - 开关灯
+    func OpenOrCloseLight(isOpen:Bool){
+        var instruction = Instruction.Builder().setCmd(cmd: Instruction.Cmd.CONTROL).setBody(body: RGBControllerReqBody(color:LIGHT_COLORS[1])).createInstruction()
+        if !isOpen {//关灯
+            instruction = Instruction.Builder().setCmd(cmd: Instruction.Cmd.CONTROL).setBody(body: RGBControllerReqBody(color:LIGHT_COLORS[13])).createInstruction()
+        }
+        
+        let message = ETMessage(bytes : instruction!.toByteArray())
+        
+        mainViewController.mAppManager.etManager.chatTo(DeviceUid, message: message) { (error) in
+            guard error == nil else {
+                let item =  MessageItem(body:"灯光控制失败",user:self.you, date:Date(timeIntervalSinceNow:0), mtype:.someone)
+                self.Chats.add(item)
+                self.tableView.reloadData()
+                return
+            }
+            print("chatto [\(self.DeviceUid)], content: \(message) ")
+        }
+       
     }
     
     //播放此条录音

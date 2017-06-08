@@ -11,6 +11,7 @@ import Foundation
 import UIKit
 import ETILinkSDK
 import SVProgressHUD
+import CoreData
 
 class VisualInteractive: BaseViewController , ChatDataSource , UITextFieldDelegate , LEDReceiveDelegete {
     
@@ -186,7 +187,6 @@ class VisualInteractive: BaseViewController , ChatDataSource , UITextFieldDelega
                 SVProgressHUD.showError(withStatus: "查询失败！")
                 return
             }
-            
             print("chatto [device], content: \(message) ")
         }
     }
@@ -202,7 +202,7 @@ class VisualInteractive: BaseViewController , ChatDataSource , UITextFieldDelega
         }
         return true
     }
-
+   
 }
 
 
