@@ -89,7 +89,6 @@ class VoiceControl: BaseViewController  , SFSpeechRecognizerDelegate , ChatDataS
                 let Sound =  MessageItem(recordUrl:SoundURL,user:me, date:Date(timeIntervalSinceNow:0), mtype:.mine)
                 Chats.add(Sound)
                 tableView.reloadData()
-                DisPoseListenResult()
             } else {
                 ShowRecordImage()
                 startRecording()   //开始语音识别
@@ -194,12 +193,22 @@ class VoiceControl: BaseViewController  , SFSpeechRecognizerDelegate , ChatDataS
                 isFinal = (result?.isFinal)!
                 self.showPrint("识别的结果是:  \(self.ListenResult)")
             }
-            if error != nil || isFinal {
+            if isFinal {//语音识别完成
+                self.showPrint("最终识别结果是: \(self.ListenResult)")
+                self.ListenResult = (result?.bestTranscription.formattedString)!
+                self.DisPoseListenResult()
                 self.audioEngine.stop()
                 inputNode.removeTap(onBus: 0)
                 self.recognitionRequest = nil
                 self.recognitionTask = nil
-               // self.microphoneButton.isEnabled = true
+            }
+            if error != nil {
+                self.showPrint("识别 error")
+                self.DisPoseListenResult()
+                self.audioEngine.stop()
+                inputNode.removeTap(onBus: 0)
+                self.recognitionRequest = nil
+                self.recognitionTask = nil
             }
         })
         let recordingFormat = inputNode.outputFormat(forBus: 0)
@@ -305,6 +314,7 @@ class VoiceControl: BaseViewController  , SFSpeechRecognizerDelegate , ChatDataS
     // - 处理识别过后的文字  能识别成指令则发送，否则给出对应提示
     
     func DisPoseListenResult(){
+        print("处理的文字是： \(self.ListenResult)")
         if ListenResult.contains("温") || ListenResult.contains("湿") || ListenResult.contains("度"){ // 查询温湿度
             sendTempOrAirReq(isTemp: true)
         }else if ListenResult.contains("气压") || ListenResult.contains("大气") { //查询大气压
