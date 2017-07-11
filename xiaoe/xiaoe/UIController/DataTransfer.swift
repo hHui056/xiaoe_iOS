@@ -126,7 +126,7 @@ class DataTransfer: BaseViewController , UITextFieldDelegate , ChatDataSource , 
     }
     //收到透传板发出的消息
     func onMessageReceived(topic: String?, message: ETReceiveMessage) {
-        if topic! == TouChuanBanUid {
+        if topic == TouChuanBanUid + "&TX" {
             let receive = String(bytes: message.bytes, encoding: String.Encoding.utf8)
             
             let item =  MessageItem(body:(receive as NSString?)!,user:you, date:Date(timeIntervalSinceNow:0), mtype:.someone)

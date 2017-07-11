@@ -417,7 +417,6 @@ class ViewController: BaseViewController {
         slideView.backgroundColor = UIColor(red:204/255,green:204/255,blue:204/255,alpha:1.0)
         slideView.frame = CGRect(origin:slidemargin,size:slidesize)
         
-        
         // - 定义《返回首页》Button大小、位置、文字颜色、点击事件
         let buttonmargin = CGPoint(x: 0, y: 0.563 * self.view.frame.height)
         let buttonsize = CGSize(width: LightControlView.frame.width, height: 0.0814 * self.view.frame.height)
@@ -516,11 +515,25 @@ class ViewController: BaseViewController {
                     let pattern = "^[0-9A-Za-z]+$"
                     let macher = MyRegex(pattern)
                     if macher.match(input: username) && username.characters.count == 34{//满足uid条件
-                        self.defaults.set(username, forKey: TOUCHUANBAN_UID_KEY)
-                        let storyboard = UIStoryboard(name: "DataTransfer", bundle: nil)
-                        let DataTransferView = (storyboard.instantiateViewController(withIdentifier:"datatrans")) as! DataTransfer
-                        DataTransferView.TouChuanBanUid = username
-                        self.navigationController?.pushViewController(DataTransferView, animated:true)
+                      //  self.defaults.set(username, forKey: TOUCHUANBAN_UID_KEY)
+                        
+                        
+                        self.mAppManager.etManager.subscribe(self.DeviceUid + "&TX"){(error) in
+                            
+                            if error == nil{
+                                print("订阅 \(self.DeviceUid)&TX 成功")
+                                
+                                // - 跳转到数据透传页面
+                                let storyboard = UIStoryboard(name: "DataTransfer", bundle: nil)
+                                let DataTransferView = (storyboard.instantiateViewController(withIdentifier:"datatrans")) as! DataTransfer
+                                DataTransferView.TouChuanBanUid = username
+                                self.navigationController?.pushViewController(DataTransferView, animated:true)
+                            }else{
+                                print("订阅 \(self.DeviceUid)&TX 失败")
+                            }
+                            
+                        }                        
+                        
                     }else{
                         self.showDialog(data: "输入的Uid有误")
                     }
@@ -534,11 +547,12 @@ class ViewController: BaseViewController {
             usernameTextField = txtUsername
             usernameTextField!.placeholder = "输入uid"
         }
+        usernameTextField?.text = DeviceUid
         //设置uid为之前保存过的uid
-        if  defaults.string(forKey: DEVICE_ID_KEY) != nil {
-            let ss =  defaults.string(forKey: TOUCHUANBAN_UID_KEY)
-            usernameTextField?.text = ss
-        }
+//        if  defaults.string(forKey: DEVICE_ID_KEY) != nil {
+//            let ss =  defaults.string(forKey: TOUCHUANBAN_UID_KEY)
+//            usernameTextField?.text = ss
+//        }
         alertController.addAction(loginAction)
         self.present(alertController, animated: true, completion: nil)
     }
@@ -547,7 +561,10 @@ class ViewController: BaseViewController {
 extension ViewController:HeHuiDelegete{
         func onMessage(type: ETMessageType, topic: String?, sender: String?, message: ETReceiveMessage) {
         SVProgressHUD.dismiss()
-        self.messagereceiveddelegate?.onMessageReceived(topic: sender, message: message)
+        let receive = String(bytes: message.bytes, encoding: String.Encoding.utf8)
+            
+        print("收到消息:  from: \(String(describing: topic))  message: \(String(describing: receive))")
+        self.messagereceiveddelegate?.onMessageReceived(topic: topic, message: message)
         
         if topic != nil{
                 return
